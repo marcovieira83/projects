@@ -1,1 +1,5 @@
 node_modules
+src/**/*.js
+*.js.map
+!src/systemjs.config.extras.js
+!src/systemjs.config.js
