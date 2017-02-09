@@ -2,9 +2,10 @@ import { NgModule }      from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent }  from './app.component';
+import { AccountsComponent }  from './accounts.component';
 
 @NgModule({
-  declarations: [ AppComponent ],
+  declarations: [ AppComponent, AccountsComponent ],
   bootstrap:    [ AppComponent ],
   imports:      [ BrowserModule ]
 })
