@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>MetaCoin - Truffle Webpack Demo w/ Frontend</title>
+  <title>Insurance POC</title>
   <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
   <script src="./app.js"></script>
 </head>
@@ -9,11 +9,17 @@
   <h1>Insurance POC</h1>
   <h3><span class="black">Status: </span><span id="contractStatus"></span></h3>
   <h1>New Apolice</h1>
-  <br><label for="amount">Amount:</label><input type="text" id="amount" placeholder="e.g., 95"></input>
-  <!-- <br><label for="beneficiary">Beneficiary:</label><input type="text" id="beneficiary" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"></input> -->
   <br><label for="beneficiary">Beneficiary:</label><input type="text" id="beneficiary" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"></input>
+  <br><label for="carModel">Car Model:</label><input type="text" id="carModel" placeholder="KIA SORENTO"></input>
+  <br><label for="carId">Car ID:</label><input type="text" id="carId" placeholder="EZH-0217"></input>
+  <br><label for="year">Year:</label><input type="text" id="year" placeholder="2015"></input>
+  <br><label for="amount">Amount:</label><input type="text" id="amount" placeholder="e.g., 95"></input>
   <br><br><button id="create" onclick="App.create()">Create</button>
-  <br><br><button id="show" onclick="App.showApolices()">Show Apolices</button>
+  <br><br>
+  <h1>Show Apolices</h1>
+  <br><button id="show" onclick="App.showApolices()">Show</button>
+  <ol id="allApolices">
+  </ol>
   <br><br>
   <span id="status"></span>
 </body>

@@ -2,7 +2,7 @@ pragma solidity ^0.4.2;
 
 library Helper {
 
-	enum Cobertura { Basica, Intermediaria, Completa }
+	enum Coverage { Basic, Intermediary, Full }
 	enum Sinistro { Leve, Medio, Punk }
 
 	function sinistroAsInt(Sinistro s) internal returns(uint8) {
@@ -12,34 +12,45 @@ library Helper {
 		throw;
 	}
 
-	function coberturaAsInt(Cobertura c) internal returns(uint8) {
-		if (c == Cobertura.Basica)  return 0;
-		if (c == Cobertura.Intermediaria) return 1;
-		if (c == Cobertura.Completa)  return 2;
+	function sinistroAsStr(uint s) internal returns(string) {
+		if (s == 0)  return "Low";
+		if (s == 1) return "Medium";
+		if (s == 2)  return "Full Loss";
+		throw;
+	}
+
+	function coverageAsInt(Coverage c) internal returns(uint8) {
+		if (c == Coverage.Basic)  return 0;
+		if (c == Coverage.Intermediary) return 1;
+		if (c == Coverage.Full)  return 2;
+		throw;
+	}
+
+	function coverageAsStr(Coverage c) internal returns(string) {
+		if (c == Coverage.Basic)  return "Basic";
+		if (c == Coverage.Intermediary) return "Intermediary";
+		if (c == Coverage.Full)  return "Full";
 		throw;
 	}
 }
 
-contract Apolice {
-	Helper.Cobertura cobertura;
-	uint amount;
-	function Apolice(Helper.Cobertura c, uint a) {
-		cobertura = c;
-		amount = a;
-	}
-}
-
-contract Apolices {
-	mapping(address => Apolice) apolices;
-
-	function put(address beneficiary, Apolice apolice) {
-		apolices[beneficiary] = apolice;
-	}
-}
-
 contract Insurance {
+	struct Car {
+		string id;
+		string model;
+		uint year;
+	}
+	struct  Apolice {
+		Helper.Coverage coverage;
+		uint amount;
+		Car car;
+	}
   address insurer;
-	Apolices apolices;
+	mapping(address => Apolice) apolices;
+	address[] beneficiaries;
+
+	event NewBeneficiary(address beneficiary);
+	event NewApoliceEvent(address beneficiary, string carId);
 
   modifier onlyInsurer() {
   		if (msg.sender != insurer) throw;
@@ -50,27 +61,46 @@ contract Insurance {
     insurer = msg.sender;
   }
 
-  function getStatus() returns(string) {
+  function getStatus() constant returns(string) {
     return "Working!";
   }
 
-	function newApolice(address beneficiary, uint value) onlyInsurer {
-		apolices.put(
-			beneficiary,
-			new Apolice(
-				Helper.Cobertura.Basica,
-				value));
+	function addBeneficiary(address beneficiary) internal constant returns(bool) {
+		for (uint i = 0; i < beneficiaries.length; i++) {
+			if (beneficiaries[i] == beneficiary) {
+				return false;
+			}
+		}
+		beneficiaries.push(beneficiary);
+		NewBeneficiary(beneficiary);
+		return true;
 	}
 
-  // works
-  // meta.getBal.call(account)
-	function getBal(address addr) returns(uint) {
-		return 20;
+	function newApolice(
+		address beneficiary,
+		uint value,
+		string carId,
+		string carModel,
+		uint carYear) onlyInsurer {
+		apolices[beneficiary] = Apolice({
+			coverage: Helper.Coverage.Basic,
+			amount: value,
+			car : Car({
+				id: carId,
+				model: carModel,
+				year: carYear
+				})});
+		addBeneficiary(beneficiary);
+		NewApoliceEvent(beneficiary, carId);
 	}
 
-  // works
-  // meta.getBala.call()
-	function getBala() returns(uint) {
-		return 50;
+	function getBeneficiaries() constant returns(address[]) {
+		return beneficiaries;
+	}
+
+	function getApolice(address beneficiary) constant returns(string coverage, uint amount) {
+		Apolice apolice = apolices[beneficiary];
+		coverage = Helper.coverageAsStr(apolice.coverage);
+		amount = apolice.amount;
 	}
 }

@@ -1,21 +1,10 @@
-// Import the page's CSS. Webpack will know what to do with it.
-import "../stylesheets/app.css";
+import '../stylesheets/app.css';
 
-// Import libraries we need.
 import { default as Web3} from 'web3';
 import { default as contract } from 'truffle-contract'
-
-// Import our contract artifacts and turn them into usable abstractions.
-// import metacoin_artifacts from '../../build/contracts/MetaCoin.json'
 import insurance_artifacts from '../../build/contracts/Insurance.json'
 
-// MetaCoin is our usable abstraction, which we'll use through the code below.
-// var MetaCoin = contract(metacoin_artifacts);
 var Insurance = contract(insurance_artifacts);
-
-// The following code is simple to show off interacting with your contracts.
-// As your needs grow you will likely need to change its form and structure.
-// For application bootstrapping, check out window.addEventListener below.
 var accounts, account;
 
 window.App = {
@@ -66,15 +55,37 @@ window.App = {
     });
   },
 
+  loadApolices: function(beneficiaries) {
+    var list = document.getElementById('allApolices');
+    list.innerHTML = "";
+
+    beneficiaries.forEach(function(b) {
+      Insurance.deployed().then(function(instance) {
+        return instance.getApolice.call(b, {from: account});
+      }).then(function(result) {
+        return "beneficiary: " + b +
+          '; coverage: ' + result[0] +
+          '; amount: ' + parseInt(result[1]);
+      }).then(function(str) {
+        var entry = document.createElement('li');
+        entry.appendChild(document.createTextNode(str));
+        list.appendChild(entry);
+
+        // document.getElementById('allApolices').innerHTML =
+        //   document.getElementById('allApolices').innerHTML + str;
+      });
+    });
+  },
+
   showApolices: function() {
     var self = this;
 
     var meta;
     Insurance.deployed().then(function(instance) {
       meta = instance;
-      return meta.getStatus.call();
-    }).then(function(value) {
-      console.log('uhuuu');
+      return meta.getBeneficiaries.call();
+    }).then(function(beneficiaries) {
+      self.loadApolices(beneficiaries);
     }).catch(function(e) {
       console.log(e);
       self.setStatus("Error showing apolices; see log.");
@@ -84,14 +95,24 @@ window.App = {
   create: function() {
     var self = this;
 
-    var amount = parseInt(document.getElementById("amount").value);
     var beneficiary = document.getElementById("beneficiary").value;
+    var carModel = document.getElementById("carModel").value;
+    var carId = document.getElementById("carId").value;
+    var year = parseInt(document.getElementById("year").value);
+    var amount = parseInt(document.getElementById("amount").value);
     this.setStatus("Initiating transaction... (please wait)");
 
     Insurance.deployed().then(function(instance) {
-      return instance.newApolice(beneficiary, amount, {from: account});
+      return instance.newApolice(
+        beneficiary,
+        amount,
+        carId,
+        carModel,
+        year,
+        {from: account,
+        gas: 239575}); // gas estimated by mist
     }).then(function(value) {
-      self.setStatus("Transaction complete!" + JSON.stringify(value));
+      self.setStatus("Transaction complete!");
       self.refreshBalance();
     }).catch(function(e) {
       console.log(e);
