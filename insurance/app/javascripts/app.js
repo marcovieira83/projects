@@ -52,28 +52,6 @@ window.App = {
     });
   },
 
-  loadApolices: function(beneficiaries) {
-    var list = document.getElementById('allApolices');
-    list.innerHTML = "";
-
-    beneficiaries.forEach(function(b) {
-      Insurance.deployed().then(function(instance) {
-        return instance.getApolice.call(b, {from: insurer});
-      }).then(function(result) {
-        return "beneficiary: " + b +
-          '; carModel: ' + result[0] +
-          '; carId: ' + result[1] +
-          '; carYear: ' + result[2] +
-          '; amount: ' + result[3] +
-          '; coverage: ' + result[4];
-      }).then(function(str) {
-        var entry = document.createElement('li');
-        entry.appendChild(document.createTextNode(str));
-        list.appendChild(entry);
-      });
-    });
-  },
-
   pendingApprovals: function() {
     var self = this;
     var list = document.getElementById('pendingApprovals');
@@ -84,15 +62,16 @@ window.App = {
       meta = instance;
       return meta.getBeneficiariesWithUpgradeRequest.call({from: insurer});
     }).then(function(beneficiaries) {
-      // meta.getPendingApprovals.call(beneficiaries[0], {from:insurer})
-        beneficiaries.forEach(function(current) {
-          meta.getPendingApprovals.call(current, {from:insurer}).then(function(coverages) {
-            var str = "beneficiary: " + current + ", from: " + coverages[0] + ", to: " + coverages[1];
-            var entry = document.createElement('li');
-            entry.appendChild(document.createTextNode(str));
-            list.appendChild(entry);
-          });
+      beneficiaries.forEach(function(current) {
+        meta.getPendingApprovals.call(current, {from:insurer}).then(function(coverages) {
+          var str = "beneficiary: " + current +
+            ", from: " + coverages[0] +
+            ", to: " + coverages[1];
+          var entry = document.createElement('li');
+          entry.appendChild(document.createTextNode(str));
+          list.appendChild(entry);
         });
+      });
     }).catch(function(e) {
       console.log(e);
       self.setStatus("Error loading pending approvals; see log.");
@@ -101,13 +80,27 @@ window.App = {
 
   showApolices: function() {
     var self = this;
+    var list = document.getElementById('allApolices');
+    list.innerHTML = "";
 
     var meta;
     Insurance.deployed().then(function(instance) {
       meta = instance;
       return meta.getBeneficiaries.call();
     }).then(function(beneficiaries) {
-      self.loadApolices(beneficiaries);
+      beneficiaries.forEach(function(b) {
+        meta.getApolice.call(b, {from:insurer}).then(function(result) {
+          var str = "beneficiary: " + b +
+            '; carModel: ' + result[0] +
+            '; carId: '    + result[1] +
+            '; carYear: '  + result[2] +
+            '; amount: '   + result[3] +
+            '; coverage: ' + result[4];
+          var entry = document.createElement('li');
+          entry.appendChild(document.createTextNode(str));
+          list.appendChild(entry);
+        })
+      });
     }).catch(function(e) {
       console.log(e);
       self.setStatus("Error showing apolices; see log.");
