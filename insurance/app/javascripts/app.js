@@ -52,6 +52,18 @@ window.App = {
     });
   },
 
+  approveAll: function() {
+    var self = this;
+    Insurance.deployed().then(function(instance) {
+      return instance.approveAll({from:insurer});
+    }).then(function(value) {
+      self.setStatus("Transaction complete!");
+    }).catch(function(e) {
+      console.log(e);
+      self.setStatus("Error approving pending requests; see log.");
+    });
+  },
+
   pendingApprovals: function() {
     var self = this;
     var list = document.getElementById('pendingApprovals');

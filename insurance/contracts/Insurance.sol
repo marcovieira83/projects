@@ -127,7 +127,7 @@ contract Insurance {
 			apolices[msg.sender],
 			Helper.coverage(coverageInt)
 			);
-			beneficiariesWithUpgradeRequest.push(msg.sender);
+		beneficiariesWithUpgradeRequest.push(msg.sender);
 	}
 
 	function getPendingApprovals(address beneficiary) constant onlyInsurer
@@ -137,9 +137,14 @@ contract Insurance {
 		newCoverage = Helper.coverageAsStr(requests[beneficiary].newCoverage);
 	}
 
-	function approveUpgrade(address beneficiary) onlyInsurer {
-		UpgradeRequest request = requests[beneficiary];
-		request.apolice.coverage = request.newCoverage;
-		UpgradeApoliceEvent(msg.sender, Helper.coverageAsStr(request.newCoverage));
+	function approveAll() onlyInsurer {
+		for (uint i = 0; i < beneficiariesWithUpgradeRequest.length; i++) {
+			address beneficiary = beneficiariesWithUpgradeRequest[i];
+			UpgradeRequest request = requests[beneficiary];
+			apolices[beneficiary].coverage = request.newCoverage;
+			UpgradeApoliceEvent(beneficiary, Helper.coverageAsStr(request.newCoverage));
+		}
+		
+		delete beneficiariesWithUpgradeRequest;
 	}
 }
