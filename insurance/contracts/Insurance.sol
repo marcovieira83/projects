@@ -58,6 +58,11 @@ contract Insurance {
   		_;
   }
 
+  modifier onlyBeneficiary() {
+  		if (msg.sender == insurer) throw;
+  		_;
+  }
+
   function Insurance() {
     insurer = msg.sender;
   }
@@ -77,12 +82,8 @@ contract Insurance {
 		return true;
 	}
 
-	function newApolice(
-		address beneficiary,
-		uint value,
-		string carId,
-		string carModel,
-		uint carYear) onlyInsurer {
+	function newApolice(address beneficiary, uint value, string carId,
+		string carModel, uint carYear) onlyInsurer {
 		apolices[beneficiary] = Apolice({
 			coverage: Helper.Coverage.Basic,
 			amount: value,
@@ -95,17 +96,11 @@ contract Insurance {
 		NewApoliceEvent(beneficiary, carModel, carId, carYear, value);
 	}
 
-	function upgrade(address beneficiary, uint coverageInt) {
-		Apolice apolice = apolices[beneficiary];
-		apolice.coverage = Helper.coverage(coverageInt);
-		UpgradeApoliceEvent(beneficiary, Helper.coverageAsStr(apolice.coverage));
-	}
-
-	function getBeneficiaries() constant returns(address[]) {
+	function getBeneficiaries() constant onlyInsurer returns(address[]) {
 		return beneficiaries;
 	}
 
-	function getApolice(address beneficiary) constant returns(
+	function getApolice(address beneficiary) constant onlyInsurer returns(
 		string carModel, string carId, uint carYear, uint amount, string coverage) {
 		Apolice apolice = apolices[beneficiary];
 		carModel = apolice.car.model;
@@ -113,5 +108,12 @@ contract Insurance {
 		carYear = apolice.car.year;
 		amount = apolice.amount;
 		coverage = Helper.coverageAsStr(apolice.coverage);
+	}
+
+	function upgrade(uint coverageInt) onlyBeneficiary {
+		if (msg.sender == insurer) throw;
+		Apolice apolice = apolices[msg.sender];
+		apolice.coverage = Helper.coverage(coverageInt);
+		UpgradeApoliceEvent(msg.sender, Helper.coverageAsStr(apolice.coverage));
 	}
 }

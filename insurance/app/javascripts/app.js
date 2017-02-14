@@ -5,7 +5,7 @@ import { default as contract } from 'truffle-contract'
 import insurance_artifacts from '../../build/contracts/Insurance.json'
 
 var Insurance = contract(insurance_artifacts);
-var accounts, account;
+var accounts, insurer;
 
 window.App = {
   start: function() {
@@ -24,7 +24,8 @@ window.App = {
       }
       console.log(accs);
       accounts = accs;
-      account = accounts[0];
+      insurer = accounts[0];
+      document.getElementById("insurer").innerHTML = insurer;
       document.getElementById("beneficiary").value = accounts[1];
 
       self.refreshBalance();
@@ -57,7 +58,7 @@ window.App = {
 
     beneficiaries.forEach(function(b) {
       Insurance.deployed().then(function(instance) {
-        return instance.getApolice.call(b, {from: account});
+        return instance.getApolice.call(b, {from: insurer});
       }).then(function(result) {
         return "beneficiary: " + b +
           '; carModel: ' + result[0] +
@@ -105,7 +106,7 @@ window.App = {
         carId,
         carModel,
         year,
-        {from: account,
+        {from: insurer,
         gas: 239575}); // gas estimated by mist
     }).then(function(value) {
       self.setStatus("Transaction complete!");
@@ -129,7 +130,7 @@ window.App = {
     this.setStatus("Initiating transaction... (please wait)");
 
     Insurance.deployed().then(function(instance) {
-      instance.upgrade(beneficiary, coverageInt, {from: account});
+      instance.upgrade(coverageInt, {from: beneficiary});
     }).then(function(value) {
       self.setStatus("Transaction complete!");
       self.refreshBalance();
