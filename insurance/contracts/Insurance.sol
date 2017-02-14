@@ -40,14 +40,21 @@ contract Insurance {
 		string model;
 		uint year;
 	}
-	struct  Apolice {
+	struct Apolice {
+		bool exists;
 		Helper.Coverage coverage;
 		uint amount;
 		Car car;
 	}
+	struct UpgradeRequest {
+		Apolice apolice;
+		Helper.Coverage newCoverage;
+	}
   address insurer;
 	mapping(address => Apolice) apolices;
 	address[] beneficiaries;
+	mapping(address => UpgradeRequest) requests;
+	address[] beneficiariesWithUpgradeRequest;
 
 	event NewBeneficiary(address beneficiary);
 	event NewApoliceEvent(address beneficiary, string carModel, string carId, uint year, uint amount);
@@ -85,6 +92,7 @@ contract Insurance {
 	function newApolice(address beneficiary, uint value, string carId,
 		string carModel, uint carYear) onlyInsurer {
 		apolices[beneficiary] = Apolice({
+			exists: true,
 			coverage: Helper.Coverage.Basic,
 			amount: value,
 			car : Car({
@@ -100,6 +108,10 @@ contract Insurance {
 		return beneficiaries;
 	}
 
+	function getBeneficiariesWithUpgradeRequest() constant onlyInsurer returns(address[]) {
+		return beneficiariesWithUpgradeRequest;
+	}
+
 	function getApolice(address beneficiary) constant onlyInsurer returns(
 		string carModel, string carId, uint carYear, uint amount, string coverage) {
 		Apolice apolice = apolices[beneficiary];
@@ -110,10 +122,24 @@ contract Insurance {
 		coverage = Helper.coverageAsStr(apolice.coverage);
 	}
 
-	function upgrade(uint coverageInt) onlyBeneficiary {
-		if (msg.sender == insurer) throw;
-		Apolice apolice = apolices[msg.sender];
-		apolice.coverage = Helper.coverage(coverageInt);
-		UpgradeApoliceEvent(msg.sender, Helper.coverageAsStr(apolice.coverage));
+	function requestUpgrade(uint coverageInt) onlyBeneficiary {
+		requests[msg.sender] = UpgradeRequest(
+			apolices[msg.sender],
+			Helper.coverage(coverageInt)
+			);
+			beneficiariesWithUpgradeRequest.push(msg.sender);
+	}
+
+	function getPendingApprovals(address beneficiary) constant onlyInsurer
+		returns(string currentCoverage, string newCoverage) {
+
+		currentCoverage = Helper.coverageAsStr(apolices[beneficiary].coverage);
+		newCoverage = Helper.coverageAsStr(requests[beneficiary].newCoverage);
+	}
+
+	function approveUpgrade(address beneficiary) onlyInsurer {
+		UpgradeRequest request = requests[beneficiary];
+		request.apolice.coverage = request.newCoverage;
+		UpgradeApoliceEvent(msg.sender, Helper.coverageAsStr(request.newCoverage));
 	}
 }

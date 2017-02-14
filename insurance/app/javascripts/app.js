@@ -74,6 +74,31 @@ window.App = {
     });
   },
 
+  pendingApprovals: function() {
+    var self = this;
+    var list = document.getElementById('pendingApprovals');
+    list.innerHTML = "";
+
+    var meta;
+    Insurance.deployed().then(function(instance) {
+      meta = instance;
+      return meta.getBeneficiariesWithUpgradeRequest.call({from: insurer});
+    }).then(function(beneficiaries) {
+      // meta.getPendingApprovals.call(beneficiaries[0], {from:insurer})
+        beneficiaries.forEach(function(current) {
+          meta.getPendingApprovals.call(current, {from:insurer}).then(function(coverages) {
+            var str = "beneficiary: " + current + ", from: " + coverages[0] + ", to: " + coverages[1];
+            var entry = document.createElement('li');
+            entry.appendChild(document.createTextNode(str));
+            list.appendChild(entry);
+          });
+        });
+    }).catch(function(e) {
+      console.log(e);
+      self.setStatus("Error loading pending approvals; see log.");
+    });
+  },
+
   showApolices: function() {
     var self = this;
 
@@ -130,7 +155,7 @@ window.App = {
     this.setStatus("Initiating transaction... (please wait)");
 
     Insurance.deployed().then(function(instance) {
-      instance.upgrade(coverageInt, {from: beneficiary});
+      instance.requestUpgrade(coverageInt, {from: beneficiary, gas: 239575});
     }).then(function(value) {
       self.setStatus("Transaction complete!");
       self.refreshBalance();
