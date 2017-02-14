@@ -5,13 +5,13 @@ body {
   font-family: "Open Sans", sans-serif;
 }
 
-label {
+/*label {
   display: inline-block;
   width: 100px;
-}
+}*/
 
 input {
-  width: 500px;
+  /*width: 500px;*/
   padding: 5px;
   font-size: 16px;
 }
@@ -29,7 +29,7 @@ h1, h2 {
 }
 
 h2 {
-  color: #AAA;
+  /*color: #AAA;*/
   font-size: 32px;
 }
 

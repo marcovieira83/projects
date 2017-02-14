@@ -8,15 +8,19 @@
 <body>
   <h1>Insurance POC</h1>
   <h3><span class="black">Status: </span><span id="contractStatus"></span></h3>
-  <h1>New Apolice</h1>
   <br><label for="beneficiary">Beneficiary:</label><input type="text" id="beneficiary" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"></input>
-  <br><label for="carModel">Car Model:</label><input type="text" id="carModel" placeholder="KIA SORENTO"></input>
-  <br><label for="carId">Car ID:</label><input type="text" id="carId" placeholder="EZH-0217"></input>
-  <br><label for="year">Year:</label><input type="text" id="year" placeholder="2015"></input>
-  <br><label for="amount">Amount:</label><input type="text" id="amount" placeholder="e.g., 95"></input>
-  <br><br><button id="create" onclick="App.create()">Create</button>
-  <br><br>
-  <h1>Show Apolices</h1>
+  <h2>New</h2><br>
+  <input type="text" id="carModel" placeholder="KIA SORENTO"></input>
+  <input type="text" id="carId" placeholder="FUH-2435"></input>
+  <input type="text" id="year" placeholder="2015"></input>
+  <input type="text" id="amount" placeholder="85000"></input>
+  <br><button id="create" onclick="App.create()">Create</button>
+  <br>
+  <h1>Upgrade</h1>
+  <br><input type="text" id="coverage" placeholder="Intermediary, Full"></input>
+  <br><button id="upgrade" onclick="App.upgrade()">Upgrade</button>
+  <br>
+  <h1>Show</h1>
   <br><button id="show" onclick="App.showApolices()">Show</button>
   <ol id="allApolices">
   </ol>

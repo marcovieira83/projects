@@ -11,22 +11,18 @@ window.App = {
   start: function() {
     var self = this;
 
-    // Bootstrap the MetaCoin abstraction for Use.
-    // MetaCoin.setProvider(web3.currentProvider);
     Insurance.setProvider(web3.currentProvider);
 
-    // Get the initial account balance so it can be displayed.
     web3.eth.getAccounts(function(err, accs) {
       if (err != null) {
         alert("There was an error fetching your accounts.");
         return;
       }
-
       if (accs.length == 0) {
         alert("Couldn't get any accounts! Make sure your Ethereum client is configured correctly.");
         return;
       }
-
+      console.log(accs);
       accounts = accs;
       account = accounts[0];
       document.getElementById("beneficiary").value = accounts[1];
@@ -64,15 +60,15 @@ window.App = {
         return instance.getApolice.call(b, {from: account});
       }).then(function(result) {
         return "beneficiary: " + b +
-          '; coverage: ' + result[0] +
-          '; amount: ' + parseInt(result[1]);
+          '; carModel: ' + result[0] +
+          '; carId: ' + result[1] +
+          '; carYear: ' + result[2] +
+          '; amount: ' + result[3] +
+          '; coverage: ' + result[4];
       }).then(function(str) {
         var entry = document.createElement('li');
         entry.appendChild(document.createTextNode(str));
         list.appendChild(entry);
-
-        // document.getElementById('allApolices').innerHTML =
-        //   document.getElementById('allApolices').innerHTML + str;
       });
     });
   },
@@ -116,7 +112,30 @@ window.App = {
       self.refreshBalance();
     }).catch(function(e) {
       console.log(e);
-      self.setStatus("Error sending coin; see log.");
+      self.setStatus("Error creating apolice; see log.");
+    });
+  },
+
+  upgrade: function() {
+    var self = this;
+
+    var beneficiary = document.getElementById("beneficiary").value;
+    var coverage = document.getElementById("coverage").value;
+    if (coverage != "Intermediary" && coverage != "Full") {
+      self.setStatus("Invalid coverage!");
+      return;
+    }
+    var coverageInt = coverage == "Intermediary" ? 1 : 2;
+    this.setStatus("Initiating transaction... (please wait)");
+
+    Insurance.deployed().then(function(instance) {
+      instance.upgrade(beneficiary, coverageInt, {from: account});
+    }).then(function(value) {
+      self.setStatus("Transaction complete!");
+      self.refreshBalance();
+    }).catch(function(e) {
+      console.log(e);
+      self.setStatus("Error upgrading apolice; see log.");
     });
   }
 };

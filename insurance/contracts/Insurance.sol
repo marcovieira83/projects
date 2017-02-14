@@ -19,17 +19,17 @@ library Helper {
 		throw;
 	}
 
-	function coverageAsInt(Coverage c) internal returns(uint8) {
-		if (c == Coverage.Basic)  return 0;
-		if (c == Coverage.Intermediary) return 1;
-		if (c == Coverage.Full)  return 2;
-		throw;
-	}
-
 	function coverageAsStr(Coverage c) internal returns(string) {
 		if (c == Coverage.Basic)  return "Basic";
 		if (c == Coverage.Intermediary) return "Intermediary";
 		if (c == Coverage.Full)  return "Full";
+		throw;
+	}
+
+	function coverage(uint c) internal returns(Coverage) {
+		if (c == 0) return Coverage.Basic;
+		if (c == 1) return Coverage.Intermediary;
+		if (c == 2) return Coverage.Full;
 		throw;
 	}
 }
@@ -50,7 +50,8 @@ contract Insurance {
 	address[] beneficiaries;
 
 	event NewBeneficiary(address beneficiary);
-	event NewApoliceEvent(address beneficiary, string carId);
+	event NewApoliceEvent(address beneficiary, string carModel, string carId, uint year, uint amount);
+	event UpgradeApoliceEvent(address beneficiary, string coverage);
 
   modifier onlyInsurer() {
   		if (msg.sender != insurer) throw;
@@ -91,16 +92,26 @@ contract Insurance {
 				year: carYear
 				})});
 		addBeneficiary(beneficiary);
-		NewApoliceEvent(beneficiary, carId);
+		NewApoliceEvent(beneficiary, carModel, carId, carYear, value);
+	}
+
+	function upgrade(address beneficiary, uint coverageInt) {
+		Apolice apolice = apolices[beneficiary];
+		apolice.coverage = Helper.coverage(coverageInt);
+		UpgradeApoliceEvent(beneficiary, Helper.coverageAsStr(apolice.coverage));
 	}
 
 	function getBeneficiaries() constant returns(address[]) {
 		return beneficiaries;
 	}
 
-	function getApolice(address beneficiary) constant returns(string coverage, uint amount) {
+	function getApolice(address beneficiary) constant returns(
+		string carModel, string carId, uint carYear, uint amount, string coverage) {
 		Apolice apolice = apolices[beneficiary];
-		coverage = Helper.coverageAsStr(apolice.coverage);
+		carModel = apolice.car.model;
+		carId = apolice.car.id;
+		carYear = apolice.car.year;
 		amount = apolice.amount;
+		coverage = Helper.coverageAsStr(apolice.coverage);
 	}
 }
