@@ -1,10 +1,10 @@
 var request = require('request');
 
 function save(exchange, buy, sell) {
-  console.log('{exchange: ' + exchange + ', ' +
-              'buy: '       + buy      + ', ' +
-              'sell: '       + sell     + ', ' +
-              'timestamp: ' + new Date() + '}');
+  console.log('{exchange: ' + exchange  + ', ' +
+              'buy: '       + buy       + ', ' +
+              'sell: '      + sell      + ', ' +
+              'timestamp: ' + timestamp + '}');
 }
 
 function flow() {
@@ -34,10 +34,13 @@ function negociecoins() {
   });
 }
 
+var timestamp = new Date();
 var intervalInMinutes = 1;
-console.log("Starting robot... Interval (minutes): " + intervalInMinutes);
+console.log("Starting robot... Interval (minutes): " + intervalInMinutes + 
+            ". Now: " + timestamp);
 
 setInterval(function() {
+  timestamp = new Date();
   flow();
   fox();
   negociecoins();
