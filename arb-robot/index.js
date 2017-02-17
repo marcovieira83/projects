@@ -2,8 +2,8 @@ var request = require('request');
 
 function save(exchange, buy, sell) {
   console.log('{exchange: ' + exchange + ', ' +
-              'bid: '       + buy      + ', ' +
-              'ask: '       + sell     + ', ' +
+              'buy: '       + buy      + ', ' +
+              'sell: '       + sell     + ', ' +
               'timestamp: ' + new Date() + '}');
 }
 
@@ -25,7 +25,20 @@ function fox() {
   });
 }
 
+function negociecoins() {
+  request('http://www.negociecoins.com.br/api/v3/BTCBRL/ticker', function(e, resp, body) {
+    if (!e && resp.statusCode == 200) {
+      var parsed = JSON.parse(body);
+      save('negociecoins', parsed.buy, parsed.sell);
+    }
+  });
+}
+
+var intervalInMinutes = 1;
+console.log("Starting robot... Interval (minutes): " + intervalInMinutes);
+
 setInterval(function() {
   flow();
   fox();
-}, 5000);
+  negociecoins();
+}, intervalInMinutes * 60 * 1000);
