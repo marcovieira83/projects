@@ -1,7 +1,7 @@
 body {
-  margin-left: 25%;
-  margin-right: 25%;
-  margin-top: 10%;
+  margin-left: 10%;
+  margin-right: 10%;
+  /*margin-top: 10%;*/
   font-family: "Open Sans", sans-serif;
 }
 
@@ -23,21 +23,21 @@ button {
 
 h1, h2 {
   display: inline-block;
-  vertical-align: middle;
-  margin-top: 0px;
-  margin-bottom: 10px;
+  /*vertical-align: middle;*/
+  /*margin-top: 0px;*/
+  /*margin-bottom: 5px;*/
 }
 
-h2 {
+/*h2 {*/
   /*color: #AAA;*/
-  font-size: 32px;
+  /*font-size: 32px;
 }
 
 h3 {
   font-weight: normal;
   color: #AAA;
   font-size: 24px;
-}
+}*/
 
 .black {
   color: black;

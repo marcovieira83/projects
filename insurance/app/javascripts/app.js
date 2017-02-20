@@ -1,17 +1,41 @@
 import '../stylesheets/app.css';
 
-import { default as Web3} from 'web3';
+import { default as Web3 } from 'web3';
 import { default as contract } from 'truffle-contract'
-import insurance_artifacts from '../../build/contracts/Insurance.json'
 
-var Insurance = contract(insurance_artifacts);
+var Insurance;
 var accounts, insurer;
 
 window.App = {
+
+  instantiateContract: function() {
+    var abiArray = [ { "constant": false, "inputs": [ { "name": "beneficiary", "type": "address" }, { "name": "value", "type": "uint256" }, { "name": "carId", "type": "string" }, { "name": "carModel", "type": "string" }, { "name": "carYear", "type": "uint256" } ], "name": "newApolice", "outputs": [], "payable": false, "type": "function" }, { "constant": false, "inputs": [], "name": "approveAll", "outputs": [], "payable": false, "type": "function" }, { "constant": true, "inputs": [], "name": "getStatus", "outputs": [ { "name": "", "type": "string", "value": "Working!" } ], "payable": false, "type": "function" }, { "constant": true, "inputs": [], "name": "getInsurer", "outputs": [ { "name": "", "type": "address", "value": "0x1c7eb251fcb014245f568975e1db269569daa0c6" } ], "payable": false, "type": "function" }, { "constant": true, "inputs": [ { "name": "beneficiary", "type": "address" } ], "name": "getPendingApprovals", "outputs": [ { "name": "currentCoverage", "type": "string", "value": "Basic" }, { "name": "newCoverage", "type": "string", "value": "Basic" } ], "payable": false, "type": "function" }, { "constant": true, "inputs": [], "name": "getBeneficiaries", "outputs": [ { "name": "", "type": "address[]", "value": [] } ], "payable": false, "type": "function" }, { "constant": true, "inputs": [ { "name": "beneficiary", "type": "address" } ], "name": "getApolice", "outputs": [ { "name": "carModel", "type": "string", "value": "" }, { "name": "carId", "type": "string", "value": "" }, { "name": "carYear", "type": "uint256", "value": "0" }, { "name": "amount", "type": "uint256", "value": "0" }, { "name": "coverage", "type": "string", "value": "Basic" } ], "payable": false, "type": "function" }, { "constant": false, "inputs": [ { "name": "coverageInt", "type": "uint256" } ], "name": "requestUpgrade", "outputs": [], "payable": false, "type": "function" }, { "constant": true, "inputs": [], "name": "getBeneficiariesWithUpgradeRequest", "outputs": [ { "name": "", "type": "address[]", "value": [] } ], "payable": false, "type": "function" }, { "inputs": [], "payable": false, "type": "constructor" }, { "anonymous": false, "inputs": [ { "indexed": false, "name": "beneficiary", "type": "address" } ], "name": "NewBeneficiary", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": false, "name": "beneficiary", "type": "address" }, { "indexed": false, "name": "carModel", "type": "string" }, { "indexed": false, "name": "carId", "type": "string" }, { "indexed": false, "name": "year", "type": "uint256" }, { "indexed": false, "name": "amount", "type": "uint256" } ], "name": "NewApoliceEvent", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": false, "name": "beneficiary", "type": "address" }, { "indexed": false, "name": "coverage", "type": "string" } ], "name": "UpgradeApoliceEvent", "type": "event" } ];
+    var address = "0xefc93cd05f931c8e7d6b3c98c1e6fef339781887";
+
+    // web3 - if instantiated like this, the contract should not be called using deployed()
+    // var Insurance = web3.eth.contract(abiArray).at(address);
+
+    // truffle build artifacts
+    // only works if insurance_artifacts were imported
+    // import insurance_artifacts from '../../build/contracts/Insurance.json'
+    // Insurance = contract(insurance_artifacts);
+
+    // truffle looking up for a network
+    Insurance = contract({
+      abi: abiArray,
+      address: address,
+      // if using testrpc, should inform "-i $network_id"
+      // if using geth-private, should inform "--networkid $numeric_network_id"
+      network_id: "33333"
+    });
+
+    Insurance.setProvider(web3.currentProvider);
+  },
+
   start: function() {
     var self = this;
 
-    Insurance.setProvider(web3.currentProvider);
+    self.instantiateContract();
 
     web3.eth.getAccounts(function(err, accs) {
       if (err != null) {
@@ -39,6 +63,7 @@ window.App = {
 
   refreshBalance: function() {
     var self = this;
+    document.getElementById("contractStatus").innerHTML = "Could not connect to contract!";
 
     var meta;
     Insurance.deployed().then(function(instance) {
@@ -174,10 +199,11 @@ window.App = {
 window.addEventListener('load', function() {
   // Checking if Web3 has been injected by the browser (Mist/MetaMask)
   if (typeof web3 !== 'undefined') {
-    console.warn("Using web3 detected from external source. If you find that your accounts don't appear or you have 0 MetaCoin, ensure you've configured that source properly. If using MetaMask, see the following link. Feel free to delete this warning. :) http://truffleframework.com/tutorials/truffle-and-metamask")
+    // alert("web3 is defined");
     // Use Mist/MetaMask's provider
     window.web3 = new Web3(web3.currentProvider);
   } else {
+    // alert("web3 is undefined. Setting local provider.");
     // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
     window.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
   }

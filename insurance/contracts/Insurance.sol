@@ -78,6 +78,10 @@ contract Insurance {
     return "Working!";
   }
 
+	function getInsurer() constant returns(address) {
+		return insurer;
+	}
+
 	function addBeneficiary(address beneficiary) internal constant returns(bool) {
 		for (uint i = 0; i < beneficiaries.length; i++) {
 			if (beneficiaries[i] == beneficiary) {
@@ -144,7 +148,7 @@ contract Insurance {
 			apolices[beneficiary].coverage = request.newCoverage;
 			UpgradeApoliceEvent(beneficiary, Helper.coverageAsStr(request.newCoverage));
 		}
-		
+
 		delete beneficiariesWithUpgradeRequest;
 	}
 }
