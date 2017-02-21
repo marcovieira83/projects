@@ -1,5 +1,5 @@
 var request = require('request');
-const repository = require('./mongo.js');
+const repository = require('./repository.js');
 
 function save(exchange, buy, sell) {
   console.log('{exchange: "' + exchange  + '", ' +
