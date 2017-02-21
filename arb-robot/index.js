@@ -38,7 +38,13 @@ function negociecoins() {
 }
 
 var timestamp = new Date();
-var intervalInMinutes = 1;
+var defaultInterval = 1;
+var argsInterval = process.argv[2];
+
+if (argsInterval) console.log("Custom interval informed: " + argsInterval);
+else console.log("Using default interval: " + defaultInterval);
+
+var intervalInMinutes = argsInterval ? argsInterval : defaultInterval;
 console.log("Starting robot... Interval (minutes): " + intervalInMinutes +
             ". Now: " + timestamp);
 
