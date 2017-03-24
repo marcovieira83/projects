@@ -1,0 +1,17 @@
+{
+  "name": "my-course",
+  "version": "1.0.0",
+  "description": "",
+  "main": "blockchain.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mocha": "^3.2.0"
+  }
+}
