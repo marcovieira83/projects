@@ -1,4 +1,5 @@
 var assert = require('assert');
+
 describe('Array', function() {
   describe('#indexOf()', function() {
     it('should return -1 when the value is not present', function() {
@@ -7,3 +8,10 @@ describe('Array', function() {
   });
 });
 
+describe('Blockchain', function() {
+  describe('receiveFirtBlock', function() {
+    it('should say height is 1', function() {
+      
+    });
+  });
+});
