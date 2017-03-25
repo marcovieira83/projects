@@ -43,9 +43,31 @@ var Block = class {
   }
 }
 
-tree = new SimpleMerkleTree();
-tree.add(new SimpleTx('1qqwexzrt', '1jdmcbsgd', 10, '1fbcswerg', 20));
-tree.add(new SimpleTx('1dakdhaks', '1ueiq3659', 15, '1ewrqtbcx', 27));
+var Blockchain = class {
+  constructor() {
+    this.chain = [];
+  }
+  add(block) {
+    this.chain.push(block);
+  }
+}
 
-block = new Block(0, '2017-04-10 21:30', '0000000000000000000000000000000000000000000000000000000000000000', tree);
-print(block);
+function block0() {
+  var tree = new SimpleMerkleTree();
+  tree.add(new SimpleTx('1qqwexzrt', '1jdmcbsgd', 10, '1fbcswerg', 20));
+  tree.add(new SimpleTx('1dakdhaks', '1ueiq3659', 15, '1ewrqtbcx', 27));
+  return new Block(0, '2017-04-10 21:30', '0000000000000000000000000000000000000000000000000000000000000000', tree);
+}
+
+function block1(previous) {
+  var tree = new SimpleMerkleTree();
+  tree.add(new SimpleTx('1madm35da', '1jdmcbsgd', 3, '1n23kd6kn', 80));
+  tree.add(new SimpleTx('1mmap56er', '1ueiq3659', 1, '1d1kda78a', 59));
+  return new Block(1, '2017-04-10 21:40', previous, tree.merkleRoot());
+}
+
+blockchain = new Blockchain();
+block0 = block0();
+blockchain.add(block0);
+blockchain.add(block1(block0.hash));
+console.log(blockchain);
