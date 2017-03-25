@@ -6,7 +6,7 @@ var hash = (value) => {
 
 var Block = class {
   constructor(height, timestamp, previousBlock, merkleRoot) {
-    this.hash = hash(height + timestamp, previousBlock, merkleRoot);
+    this.hash = hash(height + timestamp + previousBlock + merkleRoot);
   }
 }
 

@@ -7,4 +7,4 @@ function hash(value) {
   return CryptoJS.SHA256(allValues).toString();
 }
 
-console.log(hash('blockchain', 'rocks!!!'));
+console.log(hash('1', '2', '2'));

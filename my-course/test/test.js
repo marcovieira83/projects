@@ -10,8 +10,8 @@ describe('Array', function() {
 
 describe('Blockchain', function() {
   describe('receiveFirtBlock', function() {
-    it('should say height is 1', function() {
-      
+    it('should receive transactions', function() {
+      miner.newTx()
     });
   });
 });
