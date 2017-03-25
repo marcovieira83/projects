@@ -7,7 +7,7 @@ function hash(args) {
   return CryptoJS.SHA256(allValues).toString();
 }
 
-var SimpleTx = class {
+class SimpleTx  {
   constructor(input, output1, amount1, output2, amount2) {
     this.hash = hash([input, output1, amount1, output2, amount2]);
     this.input = input;
@@ -18,7 +18,7 @@ var SimpleTx = class {
   }
 }
 
-var SimpleMerkleTree = class {
+class SimpleMerkleTree {
   constructor() {
     this.root = '';
     this.txs = [];
@@ -31,7 +31,7 @@ var SimpleMerkleTree = class {
   }
 }
 
-var Block = class {
+class Block {
   constructor(height, timestamp, previousBlock, txsTree, hash, nonce) {
     this.height = height;
     this.timestamp = timestamp;
@@ -43,7 +43,7 @@ var Block = class {
   }
 }
 
-var Blockchain = class {
+class Blockchain {
   constructor() {
     this.chain = [];
   }
@@ -63,11 +63,12 @@ function block1(previous) {
   var tree = new SimpleMerkleTree();
   tree.add(new SimpleTx('1madm35da', '1jdmcbsgd', 3, '1n23kd6kn', 80));
   tree.add(new SimpleTx('1mmap56er', '1ueiq3659', 1, '1d1kda78a', 59));
-  return new Block(1, '2017-04-10 21:40', previous, tree.merkleRoot());
+  return new Block(1, '2017-04-10 21:40', previous, tree);
 }
 
 blockchain = new Blockchain();
 block0 = block0();
 blockchain.add(block0);
 blockchain.add(block1(block0.hash));
-console.log(blockchain);
+console.log('Blockchain');
+print(blockchain);

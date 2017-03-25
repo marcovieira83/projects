@@ -7,7 +7,7 @@ function hash(args) {
   return CryptoJS.SHA256(allValues).toString();
 }
 
-var SimpleTx = class {
+class SimpleTx  {
   constructor(input, output1, amount1, output2, amount2) {
     this.hash = hash([input, output1, amount1, output2, amount2]);
     this.input = input;
@@ -18,10 +18,5 @@ var SimpleTx = class {
   }
 }
 
-var input   = '1qqwexzrt';
-var output1 = '1jdmcbsgd';
-var amount1 = 10;
-var output2 = '1fbcswerg';
-var amount2 = 20;
 console.log('SimpleTx');
-print(new SimpleTx(input, output1, amount1, output2, amount2));
+print(new SimpleTx('1qqwexzrt', '1jdmcbsgd', 10, '1fbcswerg', 20));

@@ -7,7 +7,7 @@ function hash(args) {
   return CryptoJS.SHA256(allValues).toString();
 }
 
-var SimpleTx = class {
+class SimpleTx  {
   constructor(input, output1, amount1, output2, amount2) {
     this.hash = hash([input, output1, amount1, output2, amount2]);
     this.input = input;
@@ -18,7 +18,7 @@ var SimpleTx = class {
   }
 }
 
-var SimpleMerkleTree = class {
+class SimpleMerkleTree {
   constructor() {
     this.root = '';
     this.txs = [];
