@@ -1,27 +1,26 @@
 // const print = require('json-colorz');
+//
 // class MyClass {
-//   constructor() {
+//   constructor(_friend) {
 //     this.name = 'block';
-//     this.surname = 'chain';
-//     this.phones = ['(11)3133-2333', '(11)2782-8282']
+//     this.lastName = 'chain';
+//     this.phones = ['phone1', 'phone2', 'phone3'];
+//     this.bestFriend = _friend;
 //   }
 // }
-// console.log(x)
 //
-// var x = new MyClass();
+// print(new MyClass({'name' : 'bitcoin', 'nickName' : 'BTC'}));
 
 const print = require('json-colorz');
 
 class MyClass {
-  constructor() {
-    this.name = 'block'
-    this.surname = 'c'
-    this.phones = ['(11)3133-2333', '(11)2782-8282']
+  constructor(_friend) {
+    this.name = 'block';
+    this.lastName = 'chain';
+    this.phones = ['phone1', 'phone2', 'phone3'];
+    this.bestFriend = _friend;
   }
 }
 
-var x = new MyClass();
+var x = new MyClass({ 'name' : 'bitcoin', 'nickName' : 'BTC'});
 print(x);
-var y = new MyClass();
-print(y);
-print([x, y]);
