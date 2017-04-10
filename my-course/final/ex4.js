@@ -3,31 +3,44 @@ const print = require('json-colorz');
 
 function hash(args) {
   var allValues = '';
-  args.forEach((arg) => allValues += arg);
+  args.forEach((arg) => allValues += arg + ' ');
+  console.log('hashing: ' + allValues);
   return CryptoJS.SHA256(allValues).toString();
 }
 
 class SimpleTx  {
-  constructor(input, output1, amount1, output2, amount2) {
-    this.hash = hash([input, output1, amount1, output2, amount2]);
-    this.input = input;
-    this.output1 = output1;
-    this.amount1 = amount1;
-    this.output2 = output2;
-    this.amount2 = amount2;
+  constructor() {
+    this.txHash = '';
+    this.inputs = [];
+    this.outputs = [];
+  }
+
+  addInput(txHash, index) {
+    this.inputs.push({txHash, index});
+  }
+
+  addOutput(recipient, value) {
+    this.outputs.push({recipient, value});
+  }
+
+  hash() {
+    var all = [];
+    this.inputs.forEach(i => all.push(i.txHash, i.index));
+    this.outputs.forEach(o => all.push(o.recipient, o.value));
+    this.txHash = hash(all);
   }
 }
 
 class SimpleMerkleTree {
   constructor() {
-    this.root = '';
+    this.merkleRoot = '';
     this.txs = [];
   }
   add(tx) {
     this.txs.push(tx);
     var txHashes = [];
-    this.txs.forEach(tx => txHashes.push(tx.hash));
-    this.root = hash(txHashes);
+    this.txs.forEach(tx => txHashes.push(tx.txHash));
+    this.merkleRoot = hash(txHashes);
   }
 }
 

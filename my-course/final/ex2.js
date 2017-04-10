@@ -25,14 +25,8 @@ class SimpleTx  {
 
   hash() {
     var all = [];
-    this.inputs.forEach(input => {
-      all.push(input.txHash);
-      all.push(input.index);
-    });
-    this.outputs.forEach(output => {
-      all.push(output.recipient);
-      all.push(output.value);
-    });
+    this.inputs.forEach(i => all.push(i.txHash, i.index));
+    this.outputs.forEach(o => all.push(o.recipient, o.value));
     this.txHash = hash(all);
   }
 }
