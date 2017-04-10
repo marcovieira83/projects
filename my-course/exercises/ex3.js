@@ -1,7 +1,7 @@
 const CryptoJS = require('crypto-js');
 const print = require('json-colorz');
 
-unction hash(args) {
+function hash(args) {
   var allValues = '';
   args.forEach((arg) => allValues += arg + ' ');
   console.log('hashing: ' + allValues);
