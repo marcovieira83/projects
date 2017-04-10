@@ -8,7 +8,6 @@ function hash(args) {
   return CryptoJS.SHA256(allValues).toString();
 }
 
-
 class SimpleTx  {
   constructor(input, output1, amount1, output2, amount2) {
     this.hash = hash([input, output1, amount1, output2, amount2]);
