@@ -3,9 +3,11 @@ const print = require('json-colorz');
 
 function hash(args) {
   var allValues = '';
-  args.forEach((arg) => allValues += arg);
+  args.forEach((arg) => allValues += arg + ' ');
+  console.log('hashing: ' + allValues);
   return CryptoJS.SHA256(allValues).toString();
 }
+
 
 class SimpleTx  {
   constructor(input, output1, amount1, output2, amount2) {

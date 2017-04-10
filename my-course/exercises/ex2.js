@@ -3,7 +3,8 @@ const print = require('json-colorz');
 
 function hash(args) {
   var allValues = '';
-  args.forEach((arg) => allValues += arg);
+  args.forEach((arg) => allValues += arg + ' ');
+  console.log('hashing: ' + allValues);
   return CryptoJS.SHA256(allValues).toString();
 }
 
@@ -17,20 +18,24 @@ class SimpleTx  {
   addInput(txHash, index) {
     // TODO
     // adicionar objeto {txHash, index} em inputs
-
+    this.inputs.push({txHash, index});
   }
 
   addOutput(recipient, value) {
     // TODO
     // adicionar objeto {recipient, value} em outputs
-
+    this.outputs.push({recipient, value});
   }
 
   hash() {
     // TODO
+    var all = [];
     // colocar em um array todos os valores de inputs e outputs
+    this.inputs.forEach(i => all.push(i.txHash, i.index));
     // calcular hash utilizando o método hash
-
+    this.outputs.forEach(o => all.push(o.recipient, o.value));
+    // salvar resultado em this.txHash
+    this.txHash = hash(all);
   }
 }
 
