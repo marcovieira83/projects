@@ -44,22 +44,32 @@ class SimpleMerkleTree {
   }
 }
 
-class Block {
+class SimpleBlock {
   constructor(height, timestamp, previousBlock, txsTree, hash, nonce) {
     this.height = height;
     this.timestamp = timestamp;
     this.hash = hash;
     this.previousBlock = previousBlock;
-    this.merkleRoot = txsTree.root;
+    this.merkleRoot = txsTree.merkleRoot;
     this.nonce = nonce;
     this.txsTree = txsTree;
   }
 }
 
-tree = new SimpleMerkleTree();
-tree.add(new SimpleTx('1qqwexzrt', '1jdmcbsgd', 10, '1fbcswerg', 20));
-tree.add(new SimpleTx('1dakdhaks', '1ueiq3659', 15, '1ewrqtbcx', 27));
+var coinbase = new SimpleTx();
+coinbase.addOutput('1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa', 50);
+coinbase.hash();
 
-block = new Block(0, '2017-04-10 21:30', '0000000000000000000000000000000000000000000000000000000000000000', tree);
+var secondTx = new SimpleTx();
+secondTx.addInput(coinbase.txHash, 0);
+secondTx.addOutput('13wU6wmLoBshNqmBi9Ur8e92eF1eH3kxPP', 30);
+secondTx.addOutput('1GVW6vDdwdfqoswio1VQ8HaCRFQN3U9hqz', 20);
+secondTx.hash();
+
+tree = new SimpleMerkleTree();
+tree.add(coinbase);
+tree.add(secondTx);
+
+block = new SimpleBlock(0, '2017-04-10 21:30', '0000000000000000000000000000000000000000000000000000000000000000', tree);
 console.log('Block');
 print(block);
