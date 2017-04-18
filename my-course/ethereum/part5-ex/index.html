@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>VERY SIMPLE CONTRACT</title>
+  <script type="text/javascript" src="./dist/bignumber.js/bignumber.min.js"></script>
+  <script type="text/javascript" src="./dist/web3.js"></script>
+</head>
+<body>
+  <h1>VERY SIMPLE CONTRACT</h1><br/>
+  <script>
+    // TODO importar web3 e definir o provider http://localhost:8545
+
+
+    // TODO desbloquear conta
+
+
+    // TODO obter instância do contrato
+
+
+    function refresh() {
+      // TODO atualizar elementos da página com os valores do contrato
+      document.getElementById('current').innerHTML = null;
+      document.getElementById('first').innerHTML = null;
+      document.getElementById('second').innerHTML = null;
+      document.getElementById('third').innerHTML = null;
+      document.getElementById('allValues').innerHTML = null;
+    }
+
+    function setNewValue() {
+      var newValue = document.getElementById('newValue').value;
+
+      // TODO chamar setX e salvar o resultado em uma variável 'r'
+      var r = null;
+      document.getElementById('tx').innerHTML = r;
+    }
+
+    // TODO monitorar os eventos 'NewValue' e atualizar a página
+  </script>
+
+  <div>
+    <input type="text" id="newValue" placeholder="novo valor"></input>
+    <button id="newValueButton" onclick="setNewValue()">Set</button>
+  </div>
+  <br/>
+  <div style="border-style: groove;">
+    <br/>
+    <div><b>Tx hash: </b><span id="tx"></span></div><br/>
+    <div><b>New value: </b><span id="newValueSpan"></span></div><br/>
+    <div><b>Old value: </b><span id="oldValueSpan"></span></div><br/>
+  </div>
+  <br/>
+  <div style="border-style: groove;">
+    <br/>
+    <div><b>Current: </b><span id="current"></span></div><br/>
+    <div><b>First: </b><span id="first"></span></div><br/>
+    <div><b>Second: </b><span id="second"></span></div><br/>
+    <div><b>Third: </b><span id="third"></span></div><br/>
+    <div><b>AllValues: </b><span id="allValues"></span></div><br/>
+  </div>
+  <script>
+    refresh();
+  </script>
+</body>
+</html>

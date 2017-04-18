@@ -3,8 +3,11 @@ pragma solidity ^0.4.0;
 
 contract VerySimpleContract {
     struct Statistics {
-        uint max;
         uint changes;
+        uint max;
+        uint average;
+        uint sum;
+        uint average2;
     }
 
     Statistics public statistics;
@@ -17,6 +20,7 @@ contract VerySimpleContract {
 
     function setX(uint _newValue) {
         if (_newValue > 100) throw;
+
         values.push(_newValue);
         x = _newValue;
 
@@ -24,6 +28,15 @@ contract VerySimpleContract {
         if (_newValue > statistics.max) {
             statistics.max = _newValue;
         }
+
+        uint sum;
+        for (uint i = 0; i < values.length; i++) {
+            sum += values[i];
+        }
+        statistics.average = sum / statistics.changes;
+
+        statistics.sum += _newValue;
+        statistics.average2 = statistics.sum / statistics.changes;
     }
 
     function getX() constant returns (uint) {
