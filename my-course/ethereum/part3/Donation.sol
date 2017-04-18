@@ -6,6 +6,7 @@ contract Donation {
   event Withdrawal(address recipient, uint value);
 
   function Donation() payable {
+    if (msg.value < 10 ether) throw;
     Deposit(msg.sender, msg.value);
   }
 
