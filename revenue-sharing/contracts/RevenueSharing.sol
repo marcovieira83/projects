@@ -1,20 +1,50 @@
-pragma solidity ^0.4.2;
+pragma solidity ^0.4.8;
 
 contract RevenueSharing {
-  string public book = 'MY AWESOME BOOK';
 
-	function RevenueSharing() {
-	}
+  uint public percentage;
+  uint public consumed;
+  address public author;
 
-	function newPurchase() payable returns (bool) {
-		/*if (msg.value < minimumPrice) throw;*/
-		/*if (buyer.balance < msg.value) throw;*/
-		var amount = 5 ether;
+  event Deposit(uint amount, uint balance);
+  event NewSale(uint amount, uint comission, uint consumed, uint balance);
+  event Withdrawal(uint amount, uint balance, uint newBalance);
 
-		/*if (!msg.sender.send(amount)) {
-			throw;
-		}*/
-		return true;
-		/*throw;*/
-	}
+  function RevenueSharing(uint _perc) payable {
+    if (msg.value < 1 ether) throw;
+    percentage = _perc;
+    author = msg.sender;
+    Deposit(msg.value, this.balance);
+  }
+
+  modifier notAuthor() {
+    if (msg.sender == author) throw;
+    _;
+  }
+
+  modifier onlyAuthor() {
+     if (msg.sender != author) throw;
+     _;
+  }
+
+  function newSale(uint _amount) notAuthor {
+    uint comission = _amount * percentage / 100 * 1000000000000000000;
+    consumed += comission;
+    // TODO transformar para ether
+    if (consumed >= this.balance) throw;
+    NewSale(_amount, comission, consumed, this.balance);
+  }
+
+  function withdrawal() onlyAuthor returns (uint transferValue) {
+    transferValue = consumed;
+    consumed = 0;
+    uint newBalance = this.balance - transferValue;
+    Withdrawal(transferValue, this.balance, newBalance);
+    if (!author.send(transferValue)) throw;
+    return transferValue;
+  }
+
+  function () payable {
+    Deposit(msg.value, this.balance);
+  }
 }
