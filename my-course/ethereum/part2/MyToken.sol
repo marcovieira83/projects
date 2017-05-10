@@ -6,7 +6,7 @@ contract MyToken {
     // XXX address
     mapping (address => uint256) public balanceOf;
 
-    string name;
+    string public name;
 
     // XXX eventos
     event Transfer(address from, address to, uint256 value);

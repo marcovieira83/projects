@@ -30,7 +30,6 @@ contract RevenueSharing {
   function newSale(uint _amount) notAuthor {
     uint comission = _amount * percentage / 100 * 1000000000000000000;
     consumed += comission;
-    // TODO transformar para ether
     if (consumed >= this.balance) throw;
     NewSale(_amount, comission, consumed, this.balance);
   }

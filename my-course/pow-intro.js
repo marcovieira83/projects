@@ -1,7 +1,7 @@
 const CryptoJS = require('crypto-js');
 
-var nonce = -1;
-var start = '0';
+var nonce = 660 * 1000 * 1000;
+var start = '0000000' ;
 var hash = '';
 
 // enquanto o hash não começa com 0's suficientes
