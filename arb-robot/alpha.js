@@ -20,8 +20,7 @@ const defaultBody = {
 function doPost(service, body) {
   request.post(
     'https://sim3.alphapoint.com:8400/ajax/v1/' + service,
-    { json: body
-    },
+    { json: body },
     function (error, response, body) {
       if (!error && response.statusCode == 200) {
         console.log(body)
@@ -51,40 +50,6 @@ function getAccountOpenOrders() {
   doPost('GetAccountOpenOrders', defaultBody);
 }
 
-  // request.post(
-  //     'https://sim3.alphapoint.com:8400/ajax/v1/GetAccountOpenOrders',
-  //     { json:
-  //        {
-  //           "apiKey": public_key,
-  //           "apiNonce": nonce,
-  //           "apiSig": signature
-  //        }
-  //      },
-  //     function (error, response, body) {
-  //         if (!error && response.statusCode == 200) {
-  //             console.log(body)
-  //         }
-  //     }
-  // );
-
-// createOrder();
 createOrder();
 getUserInfo();
 getAccountOpenOrders();
-
-
-//(Time.now.to_f * 10000).to_isignature = OpenSSL::HMAC.hexdigest("sha256", private_key, "#{nonce}#{user_id}#{public_key}").upcase
-
-
-// GET USER INFORMATION
-// Returns first and last name
-// /ajax/v1/GetUserInfo
-//
-// Headers
-// Content-Type: application/json
-// Body
-// {
-//    "apiKey": "704ef876d150bf0e024d2379d0e29274",
-//    "apiNonce": 14225711230650,
-//    "apiSig": "B8F30FFE8FB577A9A186842661521DAB3E0E3896349C78BCAE38482F4EBDD817"
-// }
