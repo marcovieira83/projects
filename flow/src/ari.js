@@ -3,6 +3,13 @@ var shelljs = require('shelljs');
 var BigInteger = require('bigi');
 var BigDecimal = require("big.js");
 
+var argv = require('minimist')(process.argv.slice(2));
+const SKIP_VALIDATION = argv.skipValidation ? true : false;
+const NETWORK = argv.prod ? bitcoin.networks.bitcoin : bitcoin.networks.testnet;
+
+console.log("skipValidation: " + SKIP_VALIDATION);
+console.log("network: " + NETWORK);
+
 const MULTIPLIER = new BigDecimal(100000000);
 
 function currency(name, amountInSatoshi) {
@@ -26,15 +33,18 @@ function failStep() {
 }
 
 function shell(cmd) {
-  console.log("shell cmd: " + cmd + "\nshell result:");
-  return shelljs.exec(cmd);
+  var bitcoinCli = NETWORK == bitcoin.networks.bitcoin ? 'bitcoin-cli' : 'bitcoin-cli -testnet';
+  var fullCmd = bitcoinCli + ' ' + cmd;
+  console.log("shell cmd: " + fullCmd + "\nshell result:");
+
+  return shelljs.exec(fullCmd);
 }
 
 function validate(originData, recipientData) {
   beginStep("0. validating", "");
 
   console.log("checking if tx output is valid...");
-  var shellResult = shell('bitcoin-cli -testnet gettxout ' + originData.txHash + ' ' + originData.vOut);
+  var shellResult = shell('gettxout ' + originData.txHash + ' ' + originData.vOut);
 
   if (shellResult.code == 0) {
     if (shellResult.stdout === '') {
@@ -148,23 +158,25 @@ function addOutputs(tx, addressFrom, balanceInBTC, recipientData) {
   endStep();
 }
 
+
+
 function sign(tx, privateKeyWIF) {
   beginStep("3. sign", "{privateKeyWIF: " +  privateKeyWIF + "}");
 
-  var keyPair = bitcoin.ECPair.fromWIF(privateKeyWIF, bitcoin.networks.testnet);
+  var keyPair = bitcoin.ECPair.fromWIF(privateKeyWIF, NETWORK);
   tx.sign(0, keyPair);
 
   endStep();
 }
 
 function buildTx(originData, recipientData) {
-  if (process.argv[2] === '-validate=false') {
+  if (SKIP_VALIDATION) {
     console.log('Skipping validation...');
   } else if (!validate(originData, recipientData)) {
     return;
   }
 
-  var tx = new bitcoin.TransactionBuilder(bitcoin.networks.testnet);
+  var tx = new bitcoin.TransactionBuilder(NETWORK);
   tx.setVersion(2);
 
   addInput(tx, originData.txHash, originData.vOut);
@@ -189,7 +201,7 @@ function buildTx(originData, recipientData) {
 function sendTx(t) {
   beginStep("5. send tx");
 
-  var shellResult = shell('bitcoin-cli -testnet sendrawtransaction ' + t.toHex());
+  var shellResult = shell('sendrawtransaction ' + t.toHex());
   if (shellResult.code == 0) {
     console.log('TX PUSHED! YEAH!!!');
     endStep();
@@ -199,23 +211,64 @@ function sendTx(t) {
   }
 }
 
+const TRANSFER_COUNT = 1;
+const TRANSFER_AMOUNT = 0.0001;
+const TOTAL_AMOUNT = parseFloat(new BigDecimal(TRANSFER_COUNT).times(TRANSFER_AMOUNT));
+
+var transfers = [];
+for (var i = 0; i < TRANSFER_COUNT; i++) {
+  transfers.push({
+    // recipientAddress: 'mwCwTceJvYV27KXBc3NJZys6CjsgsoeHmf',
+    recipientAddress: '1HuepS5LbZ66mGbZN7UEJzAV6iWsjK31Ga',
+    transferAmountInBTC: TRANSFER_AMOUNT
+  });
+}
+
 var t = buildTx({
-  originAddress: 'mfg2bzXEJ2gwUPA5UaiN7ubnLZu1YPSgu8',
-  privateKeyWIF: 'cSR3WmP1y37i7xnHV3ZDjvBh6ZkPPKk2p9HQSctTb2e9t5XEEPec',
-  txHash: 'e5de8d324b3f556c6df6eab5bddff27443a7cd88c5d099edc90fc7305424293b',
+  originAddress: '18Ur8RRYg9exNpSzRVWBcJcitKhjVWMHpy',
+  privateKeyWIF: 'KwvPSss1v25dBHf7nAE1LjALGkdgArZM1e8kZHhrNAB8Xh41CeGW',
+  txHash: '3229c7290c65db45b3b614ce3149a0847331c50d6b5c3457bf30e0aaac430084',
   vOut: 0,
-  currentBalanceInBTC: 1.0199
+  currentBalanceInBTC: 0.01,
   },
   {
-    count: 2,
-    totalAmount: 0.0005,
-    transfers: [{
-      recipientAddress: 'mwCwTceJvYV27KXBc3NJZys6CjsgsoeHmf',
-      transferAmountInBTC: 0.0003
-    },
-    {
-      recipientAddress: 'mwCwTceJvYV27KXBc3NJZys6CjsgsoeHmf',
-      transferAmountInBTC: 0.0002
-    }]
+    count: TRANSFER_COUNT,
+    totalAmount: TOTAL_AMOUNT,
+    transfers: transfers
   }
 );
+// var t = buildTx({
+//   originAddress: 'mfg2bzXEJ2gwUPA5UaiN7ubnLZu1YPSgu8',
+//   privateKeyWIF: 'cSR3WmP1y37i7xnHV3ZDjvBh6ZkPPKk2p9HQSctTb2e9t5XEEPec',
+//   txHash: 'f4ec61aa7a3fb9a4a51b2d7b6b223956a2ec2abe08e777703484fa975e48a6d3',
+//   vOut: 0,
+//   currentBalanceInBTC: 0.8326,
+//   },
+//   {
+//     count: TRANSFER_COUNT,
+//     totalAmount: TOTAL_AMOUNT,
+//     transfers: transfers
+//   }
+// );
+
+
+
+// {
+//   id: '7df2dc6b2a78ce5dbfd531ea17bdf4acfa4b0eca1309500a2c3b3a8fdc29b7d2',
+//   count: 3,
+//   totalAmount: 31.70409678,
+//   transfers: [
+//     {
+//       recipientAddress: '1Ps4FnuFuND6atiLnsFDSuWpBvovxLCTHU',
+//       transferAmountInBTC: 0.12345678
+// 	   },
+//      {
+//        recipientAddress: '17ZDNCmQtELZ1RvBAhEdTeHwzm4Bag76LH',
+//        transferAmountInBTC: 1.45632
+//  	   },
+//      {
+//        recipientAddress: '1QCdtSYauDJvcGpPx5M4kUaawqRRVJ4vLJ',
+//        transferAmountInBTC: 30.12432
+//  	   }
+//    ]
+// }
