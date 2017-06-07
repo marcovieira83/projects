@@ -6,9 +6,12 @@ var BigDecimal = require("big.js");
 var argv = require('minimist')(process.argv.slice(2));
 const SKIP_VALIDATION = argv.skipValidation ? true : false;
 const NETWORK = argv.prod ? bitcoin.networks.bitcoin : bitcoin.networks.testnet;
+const NETWORK_NAME = argv.prod ? 'bitcoin' : 'testnet';
+const SHOULD_SEND = argv.shouldSend ? true : false;
 
 console.log("skipValidation: " + SKIP_VALIDATION);
-console.log("network: " + NETWORK);
+console.log("network: " + NETWORK_NAME);
+console.log("shouldSend: " + SHOULD_SEND);
 
 const MULTIPLIER = new BigDecimal(100000000);
 
@@ -118,7 +121,32 @@ function addInput(tx, inputTxHash, inputTxVOut) {
 }
 
 function getMiningFee(outputsCount) {
-  return 0.0003;
+  const SATOSHI_PER_BYTE = new BigDecimal(440);
+  const BASE_TX_SIZE_WITH_TWO_OUTPUTS = new BigDecimal(226);
+  const OUTPUT_SIZE = new BigDecimal(34);
+
+  console.log("calculating mining fee. {satoshiPerByte: " + SATOSHI_PER_BYTE +
+      ", baseTxSizeWithTwoOutputs: " + BASE_TX_SIZE_WITH_TWO_OUTPUTS +
+      ", outputSize: " + OUTPUT_SIZE +
+      ", outputsCount: " + outputsCount + "}");
+
+  var estimatedSize = BASE_TX_SIZE_WITH_TWO_OUTPUTS;
+  if (outputsCount > 2) {
+    var extraOutputCount = new BigDecimal(outputsCount - 2);
+    var extraSize = extraOutputCount.times(OUTPUT_SIZE);
+    estimatedSize = estimatedSize.add(extraSize);
+  }
+
+  var fee = estimatedSize.times(SATOSHI_PER_BYTE);
+  console.log("estimatedSize: " + estimatedSize +
+      ", total fee: " + fee +
+      ", satoshiPerByte: " + fee.div(estimatedSize));
+
+  //  817520 -  50 txs
+  // 1146640 - 100 txs
+  if (fee.gt(new BigDecimal(817520))) throw "Fee too high! Check it, please";
+
+  return fee;
 }
 
 function addOutputs(tx, addressFrom, balanceInBTC, recipientData) {
@@ -127,7 +155,7 @@ function addOutputs(tx, addressFrom, balanceInBTC, recipientData) {
 
   var balance = new BigDecimal(balanceInBTC).times(MULTIPLIER);
   var totalAmountInformed = new BigDecimal(recipientData.totalAmount).times(MULTIPLIER);
-  var miningFee = new BigDecimal(getMiningFee()).times(MULTIPLIER);
+  var miningFee = getMiningFee(recipientData.transfers.length + 1);
   var change = balance.minus(totalAmountInformed).minus(miningFee);
 
   console.log(currency("balance", balance));
@@ -157,8 +185,6 @@ function addOutputs(tx, addressFrom, balanceInBTC, recipientData) {
 
   endStep();
 }
-
-
 
 function sign(tx, privateKeyWIF) {
   beginStep("3. sign", "{privateKeyWIF: " +  privateKeyWIF + "}");
@@ -193,7 +219,11 @@ function buildTx(originData, recipientData) {
 
   endStep();
 
-  sendTx(t);
+  if (!SHOULD_SEND) {
+    console.log('Skipping send...');
+  } else {
+    sendTx(t);
+  }
 
   return t;
 }
@@ -211,7 +241,7 @@ function sendTx(t) {
   }
 }
 
-const TRANSFER_COUNT = 1;
+const TRANSFER_COUNT = 27;
 const TRANSFER_AMOUNT = 0.0001;
 const TOTAL_AMOUNT = parseFloat(new BigDecimal(TRANSFER_COUNT).times(TRANSFER_AMOUNT));
 
@@ -227,9 +257,9 @@ for (var i = 0; i < TRANSFER_COUNT; i++) {
 var t = buildTx({
   originAddress: '18Ur8RRYg9exNpSzRVWBcJcitKhjVWMHpy',
   privateKeyWIF: 'KwvPSss1v25dBHf7nAE1LjALGkdgArZM1e8kZHhrNAB8Xh41CeGW',
-  txHash: '3229c7290c65db45b3b614ce3149a0847331c50d6b5c3457bf30e0aaac430084',
+  txHash: '72650689f7ec267bc30c4f1481dd56485f0613e4d45dcad5115dc95477e34f99',
   vOut: 0,
-  currentBalanceInBTC: 0.01,
+  currentBalanceInBTC: 0.0096,
   },
   {
     count: TRANSFER_COUNT,
@@ -237,6 +267,7 @@ var t = buildTx({
     transfers: transfers
   }
 );
+
 // var t = buildTx({
 //   originAddress: 'mfg2bzXEJ2gwUPA5UaiN7ubnLZu1YPSgu8',
 //   privateKeyWIF: 'cSR3WmP1y37i7xnHV3ZDjvBh6ZkPPKk2p9HQSctTb2e9t5XEEPec',
