@@ -41,6 +41,40 @@ class GetUserInfo extends React.Component {
         .catch((err) => console.console.error(err));
   }
 
+  setVerificationLevel(level) {
+    var request = require('request-promise');
+
+    var options = {
+        method: 'POST',
+        uri: 'https://sim3.alphapoint.com:8451/ajax/v1/SetUserVerificationLevel',
+        body: {
+          "sessionToken": this.props.sessionToken,
+          "VerificationLevel" : '' + level,
+          "UserId" : this.state.username,
+          "Action" : "Add"
+        },
+        json: true
+    };
+
+    var that = this;
+    request(options)
+        .then((parsedBody) => console.log(parsedBody))
+        .catch((err) => console.console.error(err));
+  }
+
+  twoFA(status) {
+//     {
+//   "sessionToken": "03c7157c-2485-4c58-879b-42efdeaaca62",
+//   "userId" : "test3@alphapoint.com",
+//   "userInfoKVP" : [
+//   		{
+//             "key": "UseAuthy2FA",
+//             "value": "true"
+//         }
+//   	]
+// }
+  }
+
   render() {
     if (!this.props.sessionToken) return null;
 
@@ -54,8 +88,14 @@ class GetUserInfo extends React.Component {
           <div>
             <br/>
             <label>VerificationLevel: {this.state.verificationLevel}</label>
+            <button onClick={() => this.setVerificationLevel(0)}>BASIC</button>
+            <button onClick={() => this.setVerificationLevel(1)}>SILVER</button>
+            <button onClick={() => this.setVerificationLevel(2)}>GOLD</button>
+            <button onClick={() => this.setVerificationLevel(3)}>PLATINUM</button>
             <br/>
             <label>Use 2FA: {this.state.use2FA}</label>
+            <button onClick={() => this.twoFA(true)}>Habilitado</button>
+            <button onClick={() => this.twoFA(false)}>Desabilitado</button>
           </div>
         }
       </div>

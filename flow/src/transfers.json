@@ -1,0 +1,27 @@
+{
+  "id": "7df2dc6b2a78ce5dbfd531ea17bdf4acfa4b0eca1309500a2c3b3a8fdc29b7d2",
+  "count": 5,
+  "totalAmount": "0.0015",
+  "transfers": [
+    {
+      "recipientAddress": "155fzsEBHy9Ri2bMQ8uuuR3tv1YzcDywd4",
+      "transferAmountInBTC": 0.0001
+    },
+    {
+      "recipientAddress": "172gREiR1ywroeKP9vxzeMZH3CsaP9EmF4",
+      "transferAmountInBTC": 0.0002
+    },
+    {
+      "recipientAddress": "13ee4R2deXDwhCiYg9bkoV4tFxUiuVsmbZ",
+      "transferAmountInBTC": 0.0003
+    },
+    {
+      "recipientAddress": "1NTpe3VaRULyFfdMBXCScUq5murN9Lavkp",
+      "transferAmountInBTC": 0.0004
+    },
+    {
+      "recipientAddress": "14Em7XSDZ4FtegMnnZdzqKLpmVQSdeLGXU",
+      "transferAmountInBTC": 0.0005
+    }
+  ]
+}

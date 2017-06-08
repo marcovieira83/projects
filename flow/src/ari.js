@@ -2,43 +2,67 @@ var bitcoin = require('bitcoinjs-lib');
 var shelljs = require('shelljs');
 var BigInteger = require('bigi');
 var BigDecimal = require("big.js");
-
+var winston = require('winston');
 var argv = require('minimist')(process.argv.slice(2));
+var logger = new (winston.Logger)({
+  transports: [
+    new (winston.transports.Console)(),
+    new (winston.transports.File)({ filename: 'debug.log' })
+  ]
+});
+
+const MULTIPLIER = new BigDecimal(100000000);
 const SKIP_VALIDATION = argv.skipValidation ? true : false;
 const NETWORK = argv.prod ? bitcoin.networks.bitcoin : bitcoin.networks.testnet;
 const NETWORK_NAME = argv.prod ? 'bitcoin' : 'testnet';
 const SHOULD_SEND = argv.shouldSend ? true : false;
 
-console.log("skipValidation: " + SKIP_VALIDATION);
-console.log("network: " + NETWORK_NAME);
-console.log("shouldSend: " + SHOULD_SEND);
+logger.info("init params: {skipValidation: " + SKIP_VALIDATION +
+    ", network: " + NETWORK_NAME +
+    ", shouldSend: " + SHOULD_SEND + "}\n");
 
-const MULTIPLIER = new BigDecimal(100000000);
+if (SHOULD_SEND && SKIP_VALIDATION) {
+  logger.error("ERROR: You cannot skip validation if you will send the message.");
+  throw "ERROR: You cannot skip validation if you will send the message.";
+}
+
+var jsonfile = require('jsonfile');
+var recipientData = jsonfile.readFileSync('./transfers.json');
+var originData = jsonfile.readFileSync('./origin.json');
+var conf = jsonfile.readFileSync('./conf.json');
+
+const SATOSHI_PER_BYTE = new BigDecimal(conf.satoshiPerByte);
+const BASE_TX_SIZE_WITH_TWO_OUTPUTS = new BigDecimal(conf.baseTxSizeWithTwoOutputs);
+const OUTPUT_SIZE = new BigDecimal(conf.outputSize);
+const MAX_FEE = new BigDecimal(conf.maxFee);
+
+buildTx(originData, recipientData);
+
 
 function currency(name, amountInSatoshi) {
   return name + ": {satoshi: " + amountInSatoshi + ", btc: " + amountInSatoshi.div(MULTIPLIER) + "}";
 }
 
 function beginStep(msg, params) {
-  console.log("=================================");
-  console.log("Step: " + msg);
-  console.log("Params: " + params + "\n");
+  logger.info("=================================");
+  logger.info("Step: " + msg);
+  logger.info("Params: " + params + "\n");
 }
 
 function endStep() {
-  console.log("\nStep completed");
-  console.log("=================================\n");
+  logger.info("Step completed");
+  logger.info("=================================\n");
 }
 
 function failStep() {
-  console.log("\nStep failed");
-  console.log("=================================\n");
+  logger.info("\nStep failed");
+  logger.info("=================================\n");
 }
 
 function shell(cmd) {
   var bitcoinCli = NETWORK == bitcoin.networks.bitcoin ? 'bitcoin-cli' : 'bitcoin-cli -testnet';
   var fullCmd = bitcoinCli + ' ' + cmd;
-  console.log("shell cmd: " + fullCmd + "\nshell result:");
+  logger.info("shell cmd: " + fullCmd + "\nshell result:");
 
   return shelljs.exec(fullCmd);
 }
@@ -46,12 +70,12 @@ function shell(cmd) {
 function validate(originData, recipientData) {
   beginStep("0. validating", "");
 
-  console.log("checking if tx output is valid...");
+  logger.info("checking if tx output is valid...");
   var shellResult = shell('gettxout ' + originData.txHash + ' ' + originData.vOut);
 
   if (shellResult.code == 0) {
     if (shellResult.stdout === '') {
-      console.error("Tx output not found. Probably this tx output was already spent: {txHash: "
+      logger.error("Tx output not found. Probably this tx output was already spent: {txHash: "
           + originData.txHash + ", vOut: " + originData.vOut + "}");
       failStep();
       return false;
@@ -62,22 +86,22 @@ function validate(originData, recipientData) {
     var value = outJson.value;
 
     if (originData.originAddress == address) {
-      console.log("Address OK");
+      logger.info("Address OK");
     } else {
-      console.error("Addresses dont match!!!");
+      logger.error("Addresses dont match!!!");
       failStep();
       return false;
     }
 
     if (originData.currentBalanceInBTC == value) {
-      console.log("Balances OK");
+      logger.info("Balances OK");
     } else {
-      console.error("Balances dont match!!!");
+      logger.error("Balances dont match!!!");
       failStep();
       return false;
     }
 
-    console.log("validating recipientData...");
+    logger.info("validating recipientData...");
 
     var totalAmount = new BigDecimal(0);
     var i = 0;
@@ -87,23 +111,31 @@ function validate(originData, recipientData) {
     });
 
     if (totalAmount.eq(new BigDecimal(recipientData.totalAmount))) {
-      console.log("Total amount OK");
+      logger.info("Total amount OK");
     } else {
-      console.error("Total amount dont match!!!");
+      logger.error("Total amount dont match!!!");
       failStep();
       return false;
     }
 
     if (recipientData.count === i) {
-      console.log("Recipient count OK");
+      logger.info("Recipient count OK");
     } else {
-      console.error("Recipient count not OK!!!");
+      logger.error("Recipient count not OK!!!");
       failStep();
       return false;
     }
 
+    if (recipientData.totalAmount > originData.currentBalanceInBTC) {
+      logger.error("Total amount to be transfered is greater than current balance. {" +
+          "recipientData.totalAmount: " + recipientData.totalAmount +
+          "originData.currentBalanceInBTC: " + originData.currentBalanceInBTC +
+          "}");
+      return false;
+    }
+
   } else {
-    console.error('ERROR VALIDATING TX!!!');
+    logger.error('ERROR VALIDATING TX!!!');
     failStep();
     return false;
   }
@@ -121,11 +153,7 @@ function addInput(tx, inputTxHash, inputTxVOut) {
 }
 
 function getMiningFee(outputsCount) {
-  const SATOSHI_PER_BYTE = new BigDecimal(440);
-  const BASE_TX_SIZE_WITH_TWO_OUTPUTS = new BigDecimal(226);
-  const OUTPUT_SIZE = new BigDecimal(34);
-
-  console.log("calculating mining fee. {satoshiPerByte: " + SATOSHI_PER_BYTE +
+  logger.info("calculating mining fee. {satoshiPerByte: " + SATOSHI_PER_BYTE +
       ", baseTxSizeWithTwoOutputs: " + BASE_TX_SIZE_WITH_TWO_OUTPUTS +
       ", outputSize: " + OUTPUT_SIZE +
       ", outputsCount: " + outputsCount + "}");
@@ -138,13 +166,13 @@ function getMiningFee(outputsCount) {
   }
 
   var fee = estimatedSize.times(SATOSHI_PER_BYTE);
-  console.log("estimatedSize: " + estimatedSize +
+  logger.info("estimatedSize: " + estimatedSize +
       ", total fee: " + fee +
       ", satoshiPerByte: " + fee.div(estimatedSize));
 
   //  817520 -  50 txs
   // 1146640 - 100 txs
-  if (fee.gt(new BigDecimal(817520))) throw "Fee too high! Check it, please";
+  if (fee.gt(new BigDecimal(MAX_FEE))) throw "Fee too high! Check it, please";
 
   return fee;
 }
@@ -158,10 +186,10 @@ function addOutputs(tx, addressFrom, balanceInBTC, recipientData) {
   var miningFee = getMiningFee(recipientData.transfers.length + 1);
   var change = balance.minus(totalAmountInformed).minus(miningFee);
 
-  console.log(currency("balance", balance));
-  console.log(currency("totalAmount", totalAmountInformed));
-  console.log(currency("miningFee", miningFee));
-  console.log(currency("change", change));
+  logger.info(currency("balance", balance));
+  logger.info(currency("totalAmount", totalAmountInformed));
+  logger.info(currency("miningFee", miningFee));
+  logger.info(currency("change", change));
 
   tx.addOutput(addressFrom, parseInt(change));
 
@@ -171,7 +199,7 @@ function addOutputs(tx, addressFrom, balanceInBTC, recipientData) {
   recipientData.transfers.forEach((oneRecipientData) => {
     var amount = new BigDecimal(oneRecipientData.transferAmountInBTC).times(MULTIPLIER);
 
-    console.log("adding output " + outputsCount++ +": {address: " + oneRecipientData.recipientAddress
+    logger.info("adding output " + outputsCount++ +": {address: " + oneRecipientData.recipientAddress
         + ", " + currency("amount", amount) + "}");
 
     totalAmount = totalAmount.plus(amount);
@@ -197,7 +225,7 @@ function sign(tx, privateKeyWIF) {
 
 function buildTx(originData, recipientData) {
   if (SKIP_VALIDATION) {
-    console.log('Skipping validation...');
+    logger.info('Skipping validation...');
   } else if (!validate(originData, recipientData)) {
     return;
   }
@@ -213,14 +241,14 @@ function buildTx(originData, recipientData) {
   beginStep("4. build tx");
   var t = tx.build();
 
-  console.log('hash: ' + t.getId());
-  console.log('byteLength: ' + t.byteLength());
-  console.log('hex: ' + t.toHex());
+  logger.info('hash: ' + t.getId());
+  logger.info('byteLength: ' + t.byteLength());
+  logger.info('hex: ' + t.toHex());
 
   endStep();
 
   if (!SHOULD_SEND) {
-    console.log('Skipping send...');
+    logger.info('Skipping send...');
   } else {
     sendTx(t);
   }
@@ -233,73 +261,10 @@ function sendTx(t) {
 
   var shellResult = shell('sendrawtransaction ' + t.toHex());
   if (shellResult.code == 0) {
-    console.log('TX PUSHED! YEAH!!!');
+    logger.info('TX PUSHED! YEAH!!!');
     endStep();
   } else {
-    console.error('ERROR PUSHING TX!!!');
+    logger.error('ERROR PUSHING TX!!!');
     failStep();
   }
 }
-
-const TRANSFER_COUNT = 27;
-const TRANSFER_AMOUNT = 0.0001;
-const TOTAL_AMOUNT = parseFloat(new BigDecimal(TRANSFER_COUNT).times(TRANSFER_AMOUNT));
-
-var transfers = [];
-for (var i = 0; i < TRANSFER_COUNT; i++) {
-  transfers.push({
-    // recipientAddress: 'mwCwTceJvYV27KXBc3NJZys6CjsgsoeHmf',
-    recipientAddress: '1HuepS5LbZ66mGbZN7UEJzAV6iWsjK31Ga',
-    transferAmountInBTC: TRANSFER_AMOUNT
-  });
-}
-
-var t = buildTx({
-  originAddress: '18Ur8RRYg9exNpSzRVWBcJcitKhjVWMHpy',
-  privateKeyWIF: 'KwvPSss1v25dBHf7nAE1LjALGkdgArZM1e8kZHhrNAB8Xh41CeGW',
-  txHash: '72650689f7ec267bc30c4f1481dd56485f0613e4d45dcad5115dc95477e34f99',
-  vOut: 0,
-  currentBalanceInBTC: 0.0096,
-  },
-  {
-    count: TRANSFER_COUNT,
-    totalAmount: TOTAL_AMOUNT,
-    transfers: transfers
-  }
-);
-
-// var t = buildTx({
-//   originAddress: 'mfg2bzXEJ2gwUPA5UaiN7ubnLZu1YPSgu8',
-//   privateKeyWIF: 'cSR3WmP1y37i7xnHV3ZDjvBh6ZkPPKk2p9HQSctTb2e9t5XEEPec',
-//   txHash: 'f4ec61aa7a3fb9a4a51b2d7b6b223956a2ec2abe08e777703484fa975e48a6d3',
-//   vOut: 0,
-//   currentBalanceInBTC: 0.8326,
-//   },
-//   {
-//     count: TRANSFER_COUNT,
-//     totalAmount: TOTAL_AMOUNT,
-//     transfers: transfers
-//   }
-// );
-
-
-
-// {
-//   id: '7df2dc6b2a78ce5dbfd531ea17bdf4acfa4b0eca1309500a2c3b3a8fdc29b7d2',
-//   count: 3,
-//   totalAmount: 31.70409678,
-//   transfers: [
-//     {
-//       recipientAddress: '1Ps4FnuFuND6atiLnsFDSuWpBvovxLCTHU',
-//       transferAmountInBTC: 0.12345678
-// 	   },
-//      {
-//        recipientAddress: '17ZDNCmQtELZ1RvBAhEdTeHwzm4Bag76LH',
-//        transferAmountInBTC: 1.45632
-//  	   },
-//      {
-//        recipientAddress: '1QCdtSYauDJvcGpPx5M4kUaawqRRVJ4vLJ',
-//        transferAmountInBTC: 30.12432
-//  	   }
-//    ]
-// }

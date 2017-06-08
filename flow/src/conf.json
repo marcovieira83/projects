@@ -1,0 +1,6 @@
+{
+  "satoshiPerByte": 440,
+  "baseTxSizeWithTwoOutputs": 226,
+  "outputSize": 34,
+  "maxFee": 817520
+}
