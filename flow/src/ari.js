@@ -191,6 +191,11 @@ function addOutputs(tx, addressFrom, balanceInBTC, recipientData) {
   logger.info(currency("miningFee", miningFee));
   logger.info(currency("change", change));
 
+  if (new BigDecimal(0).gt(change)) {
+    logger.error("ERROR: Total amount to be transfered plus miningFee is greater than current balance.");
+    throw "ERROR: Total amount to be transfered plus miningFee is greater than current balance.";
+  }
+
   tx.addOutput(addressFrom, parseInt(change));
 
   var totalAmount = new BigDecimal(0);
@@ -198,17 +203,19 @@ function addOutputs(tx, addressFrom, balanceInBTC, recipientData) {
 
   recipientData.transfers.forEach((oneRecipientData) => {
     var amount = new BigDecimal(oneRecipientData.transferAmountInBTC).times(MULTIPLIER);
-
-    logger.info("adding output " + outputsCount++ +": {address: " + oneRecipientData.recipientAddress
-        + ", " + currency("amount", amount) + "}");
-
     totalAmount = totalAmount.plus(amount);
+
+    logger.info("adding output " + outputsCount++ +": {" +
+        "address: " + oneRecipientData.recipientAddress +
+        ", " + currency("amount", amount) +
+        ", " + currency("totalAmount", totalAmount) + "}");
+
     tx.addOutput(oneRecipientData.recipientAddress, parseInt(amount));
   });
 
   // validates again
   if (!totalAmount.eq(new BigDecimal(recipientData.totalAmount).times(MULTIPLIER))) {
-    throw "Total amount does not match.";
+    throw "Total amount does not match. {expected: " + recipientData.totalAmount + ", got: " + totalAmount + "}";
   }
 
   endStep();

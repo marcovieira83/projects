@@ -1,0 +1,121 @@
+node ari.js --prod --shouldSend
+info: init params: {skipValidation: false, network: bitcoin, shouldSend: true}
+
+info: =================================
+info: Step: 0. validating
+info: Params:
+
+info: checking if tx output is valid...
+info: shell cmd: bitcoin-cli gettxout 64945f0b8c33483f61b532d42bedc0d3e7578419f56a0446b0da078f5926d99d 1
+shell result:
+{
+  "bestblock": "000000000000000000a71e7ecf83438a20fe38a6843c7e99fd21a3627cfeb0d2",
+  "confirmations": 0,
+  "value": 4.74000000,
+  "scriptPubKey": {
+    "asm": "OP_DUP OP_HASH160 199cd2125590e81e3fc9c4e1f5a4a2ec12415de9 OP_EQUALVERIFY OP_CHECKSIG",
+    "hex": "76a914199cd2125590e81e3fc9c4e1f5a4a2ec12415de988ac",
+    "reqSigs": 1,
+    "type": "pubkeyhash",
+    "addresses": [
+      "13LRkt8USGCMCaWHMRYgAm9NBJbm2wj4Mf"
+    ]
+  },
+  "version": 1,
+  "coinbase": false
+}
+info: Address OK
+info: Balances OK
+info: validating recipientData...
+info: Total amount OK
+info: Recipient count OK
+info: Step completed
+info: =================================
+
+info: =================================
+info: Step: 1. adding input
+info: Params: {txHash: 64945f0b8c33483f61b532d42bedc0d3e7578419f56a0446b0da078f5926d99d, vout: 1}
+
+info: Step completed
+info: =================================
+
+info: =================================
+info: Step: 2. adding outputs
+info: Params: {addressFrom: 13LRkt8USGCMCaWHMRYgAm9NBJbm2wj4Mf, balanceInBTC: 4.74, recipientData: {"id":"00000000-0000-0000-0000-000000000000","count":40,"totalAmount":4.72565232,"transfers":[{"recipientAddress":"1PmAZKJnpJA7DKnhgjQqhRXZRkhRRQZKtg","transferAmountInBTC":0.11638043},{"recipientAddress":"189cHYDGNDmKVf7NQHbj6JyHcF1xEqwYdb","transferAmountInBTC":0.11783692},{"recipientAddress":"1Aj5wVR3DgtWDvL2hBYLEo9nMhjXpfEM8D","transferAmountInBTC":0.1180016},{"recipientAddress":"15zaUE7ovKmxUUP4tVtSyKH34dxjCKNaKs","transferAmountInBTC":0.11812969},{"recipientAddress":"1HVuCZZ2PofqpqQnf29vDK9qmStfqi2qm3","transferAmountInBTC":0.11820288},{"recipientAddress":"1MxLh2goiQdU7h2JwbyYtFpa8vohPbwteN","transferAmountInBTC":0.11820288},{"recipientAddress":"1M8H1713K1BvSjWmMAkQiaCH3HQXnyRDQ1","transferAmountInBTC":0.11820288},{"recipientAddress":"17YWb5742ffVhFg8rrMZKVUmZrzZDjMYpR","transferAmountInBTC":0.11820288},{"recipientAddress":"396jR7Xrd1QyTMeGzBPbD6Mfhff73obQDp","transferAmountInBTC":0.11820288},{"recipientAddress":"1MYKSz2Gu8G69E7eP6ErwNhPATopbFyhd1","transferAmountInBTC":0.11820288},{"recipientAddress":"1KFqkHTXWNZYWYxgxf4WvNnPgJRJFx4bii","transferAmountInBTC":0.11820288},{"recipientAddress":"1EkxcPRHzeVq3Vgn4UGbwScfTMvmtaDqMg","transferAmountInBTC":0.11820288},{"recipientAddress":"1EixpM4vnU2dhsj5FuqoTRSjJhVTvvR9hX","transferAmountInBTC":0.11820288},{"recipientAddress":"37L8d2LhFtAyBth67eLGGMUEhu1bFyoGjB","transferAmountInBTC":0.11820288},{"recipientAddress":"37SiovtBFwnpEULMkPxKTvNEvzuYmamy3r","transferAmountInBTC":0.11820288},{"recipientAddress":"3LL7vVXeHPN65v7UtPdaAYjttWJ6idJQLb","transferAmountInBTC":0.11820288},{"recipientAddress":"15mKZxmMAXNBHwswjf7HavMQYiFwncDsvu","transferAmountInBTC":0.11820288},{"recipientAddress":"17dFnM7k8B11wtjY6m1tQVbdJaKoRyDAaE","transferAmountInBTC":0.11820288},{"recipientAddress":"1GGDUA7tLWdArrj7Cc9ZkeeAn589tqcxDX","transferAmountInBTC":0.11820288},{"recipientAddress":"19oyrSK9CDpq8N5sKF66x5METLWXrZRVBV","transferAmountInBTC":0.11820288},{"recipientAddress":"1CKYkTMigmEAHGwraEvSqJREFievePbT9P","transferAmountInBTC":0.11820288},{"recipientAddress":"1QE5t4g6z3CfJMje3LW1EudSRNYRLamzXu","transferAmountInBTC":0.11820288},{"recipientAddress":"1CgMZ1MFXJjhbpMPgUzXQePmzLuXVikqzB","transferAmountInBTC":0.11820288},{"recipientAddress":"1JyRKp1HNtJYmr2nM2npgfrTmciaUXJVRj","transferAmountInBTC":0.11820288},{"recipientAddress":"17eCQtGCBaxFEyU3VA8J8iHovdoh5s16gp","transferAmountInBTC":0.11820288},{"recipientAddress":"1Dnvw7NDHg4XqqmsQpaFG9z2eqCNfYXAkJ","transferAmountInBTC":0.11820288},{"recipientAddress":"1ESZKpBGEXewn7sEDEcvB7B5q65q8hTXuN","transferAmountInBTC":0.11820288},{"recipientAddress":"1ALxuzmwGCNvijNJeweJWDRkycPHitTWKY","transferAmountInBTC":0.11820288},{"recipientAddress":"12qWR7qR9x2DuhP9RJv924bH5nyPHqGxy7","transferAmountInBTC":0.11820288},{"recipientAddress":"3H7XYBJwLrhS4Uk5kx4S85fh2dvT8GkRDG","transferAmountInBTC":0.11820288},{"recipientAddress":"16TPuLNkSYRC887N5dXn26XhNMsMvNQcp2","transferAmountInBTC":0.11820288},{"recipientAddress":"141F2PGifEr5BTgbsF7TNAyXxs4j1E1byY","transferAmountInBTC":0.11820288},{"recipientAddress":"3QrcRmm7aJRgDB9sguoXAxoqMZ7Q4hG9Xo","transferAmountInBTC":0.11820288},{"recipientAddress":"33uQXc7J6Se78N6nGgzeNkqTseGLs6jRan","transferAmountInBTC":0.11820288},{"recipientAddress":"353zZHBJWoHcUk8pgbsfc71LKGLd2Fj72f","transferAmountInBTC":0.11820288},{"recipientAddress":"3EDTLyPrqvKKitBSP6qA7hPVAqFEsutdPo","transferAmountInBTC":0.11820288},{"recipientAddress":"19vqw2Wr9SytiupGae6kERkUZMvKYTfm9p","transferAmountInBTC":0.11820288},{"recipientAddress":"3HaFHF9sfYeg6giVtkmtFKGGpUDtjsmhrq","transferAmountInBTC":0.11820288},{"recipientAddress":"13BdF65bvvU9ThsCw4zRpFxPybFj9G6iE9","transferAmountInBTC":0.11820288},{"recipientAddress":"19GQvUuKeCUvXqSTY5d44chSt8sRYQCqDp","transferAmountInBTC":0.11820288}]}}
+
+info: calculating mining fee. {satoshiPerByte: 440, baseTxSizeWithTwoOutputs: 226, outputSize: 34, outputsCount: 41}
+info: estimatedSize: 1552, total fee: 682880, satoshiPerByte: 440
+info: balance: {satoshi: 474000000, btc: 4.74}
+info: totalAmount: {satoshi: 472565232, btc: 4.72565232}
+info: miningFee: {satoshi: 682880, btc: 0.0068288}
+info: change: {satoshi: 751888, btc: 0.00751888}
+info: adding output 0: {address: 1PmAZKJnpJA7DKnhgjQqhRXZRkhRRQZKtg, amount: {satoshi: 11638043, btc: 0.11638043}, totalAmount: {satoshi: 11638043, btc: 0.11638043}}
+info: adding output 1: {address: 189cHYDGNDmKVf7NQHbj6JyHcF1xEqwYdb, amount: {satoshi: 11783692, btc: 0.11783692}, totalAmount: {satoshi: 23421735, btc: 0.23421735}}
+info: adding output 2: {address: 1Aj5wVR3DgtWDvL2hBYLEo9nMhjXpfEM8D, amount: {satoshi: 11800160, btc: 0.1180016}, totalAmount: {satoshi: 35221895, btc: 0.35221895}}
+info: adding output 3: {address: 15zaUE7ovKmxUUP4tVtSyKH34dxjCKNaKs, amount: {satoshi: 11812969, btc: 0.11812969}, totalAmount: {satoshi: 47034864, btc: 0.47034864}}
+info: adding output 4: {address: 1HVuCZZ2PofqpqQnf29vDK9qmStfqi2qm3, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 58855152, btc: 0.58855152}}
+info: adding output 5: {address: 1MxLh2goiQdU7h2JwbyYtFpa8vohPbwteN, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 70675440, btc: 0.7067544}}
+info: adding output 6: {address: 1M8H1713K1BvSjWmMAkQiaCH3HQXnyRDQ1, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 82495728, btc: 0.82495728}}
+info: adding output 7: {address: 17YWb5742ffVhFg8rrMZKVUmZrzZDjMYpR, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 94316016, btc: 0.94316016}}
+info: adding output 8: {address: 396jR7Xrd1QyTMeGzBPbD6Mfhff73obQDp, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 106136304, btc: 1.06136304}}
+info: adding output 9: {address: 1MYKSz2Gu8G69E7eP6ErwNhPATopbFyhd1, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 117956592, btc: 1.17956592}}
+info: adding output 10: {address: 1KFqkHTXWNZYWYxgxf4WvNnPgJRJFx4bii, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 129776880, btc: 1.2977688}}
+info: adding output 11: {address: 1EkxcPRHzeVq3Vgn4UGbwScfTMvmtaDqMg, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 141597168, btc: 1.41597168}}
+info: adding output 12: {address: 1EixpM4vnU2dhsj5FuqoTRSjJhVTvvR9hX, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 153417456, btc: 1.53417456}}
+info: adding output 13: {address: 37L8d2LhFtAyBth67eLGGMUEhu1bFyoGjB, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 165237744, btc: 1.65237744}}
+info: adding output 14: {address: 37SiovtBFwnpEULMkPxKTvNEvzuYmamy3r, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 177058032, btc: 1.77058032}}
+info: adding output 15: {address: 3LL7vVXeHPN65v7UtPdaAYjttWJ6idJQLb, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 188878320, btc: 1.8887832}}
+info: adding output 16: {address: 15mKZxmMAXNBHwswjf7HavMQYiFwncDsvu, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 200698608, btc: 2.00698608}}
+info: adding output 17: {address: 17dFnM7k8B11wtjY6m1tQVbdJaKoRyDAaE, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 212518896, btc: 2.12518896}}
+info: adding output 18: {address: 1GGDUA7tLWdArrj7Cc9ZkeeAn589tqcxDX, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 224339184, btc: 2.24339184}}
+info: adding output 19: {address: 19oyrSK9CDpq8N5sKF66x5METLWXrZRVBV, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 236159472, btc: 2.36159472}}
+info: adding output 20: {address: 1CKYkTMigmEAHGwraEvSqJREFievePbT9P, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 247979760, btc: 2.4797976}}
+info: adding output 21: {address: 1QE5t4g6z3CfJMje3LW1EudSRNYRLamzXu, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 259800048, btc: 2.59800048}}
+info: adding output 22: {address: 1CgMZ1MFXJjhbpMPgUzXQePmzLuXVikqzB, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 271620336, btc: 2.71620336}}
+info: adding output 23: {address: 1JyRKp1HNtJYmr2nM2npgfrTmciaUXJVRj, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 283440624, btc: 2.83440624}}
+info: adding output 24: {address: 17eCQtGCBaxFEyU3VA8J8iHovdoh5s16gp, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 295260912, btc: 2.95260912}}
+info: adding output 25: {address: 1Dnvw7NDHg4XqqmsQpaFG9z2eqCNfYXAkJ, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 307081200, btc: 3.070812}}
+info: adding output 26: {address: 1ESZKpBGEXewn7sEDEcvB7B5q65q8hTXuN, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 318901488, btc: 3.18901488}}
+info: adding output 27: {address: 1ALxuzmwGCNvijNJeweJWDRkycPHitTWKY, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 330721776, btc: 3.30721776}}
+info: adding output 28: {address: 12qWR7qR9x2DuhP9RJv924bH5nyPHqGxy7, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 342542064, btc: 3.42542064}}
+info: adding output 29: {address: 3H7XYBJwLrhS4Uk5kx4S85fh2dvT8GkRDG, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 354362352, btc: 3.54362352}}
+info: adding output 30: {address: 16TPuLNkSYRC887N5dXn26XhNMsMvNQcp2, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 366182640, btc: 3.6618264}}
+info: adding output 31: {address: 141F2PGifEr5BTgbsF7TNAyXxs4j1E1byY, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 378002928, btc: 3.78002928}}
+info: adding output 32: {address: 3QrcRmm7aJRgDB9sguoXAxoqMZ7Q4hG9Xo, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 389823216, btc: 3.89823216}}
+info: adding output 33: {address: 33uQXc7J6Se78N6nGgzeNkqTseGLs6jRan, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 401643504, btc: 4.01643504}}
+info: adding output 34: {address: 353zZHBJWoHcUk8pgbsfc71LKGLd2Fj72f, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 413463792, btc: 4.13463792}}
+info: adding output 35: {address: 3EDTLyPrqvKKitBSP6qA7hPVAqFEsutdPo, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 425284080, btc: 4.2528408}}
+info: adding output 36: {address: 19vqw2Wr9SytiupGae6kERkUZMvKYTfm9p, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 437104368, btc: 4.37104368}}
+info: adding output 37: {address: 3HaFHF9sfYeg6giVtkmtFKGGpUDtjsmhrq, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 448924656, btc: 4.48924656}}
+info: adding output 38: {address: 13BdF65bvvU9ThsCw4zRpFxPybFj9G6iE9, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 460744944, btc: 4.60744944}}
+info: adding output 39: {address: 19GQvUuKeCUvXqSTY5d44chSt8sRYQCqDp, amount: {satoshi: 11820288, btc: 0.11820288}, totalAmount: {satoshi: 472565232, btc: 4.72565232}}
+info: Step completed
+info: =================================
+
+info: =================================
+info: Step: 3. sign
+info: Params: {privateKeyWIF: L3iKQ3MQWTXEDvtzq6XMi8x2uKrhrLbEvgQ3f7HVCknHaNZLcfeG}
+
+info: Step completed
+info: =================================
+
+info: =================================
+info: Step: 4. build tx
+info: Params: undefined
+
+info: hash: 96d1c74534597e5939d49a9615c6399f3fe0967c8ac40f83c4acc556eb062464
+info: byteLength: 1532
+info: hex: 02000000019dd926598f07dab046046af5198457e7d3c0ed2bd432b5613f48338c0b5f9464010000006b4830450221009ead2f7e2a2150afd39afec4d9f9f32c1dcda593d7b0543deccbf1b4f8c262fe02202a2faaf29b1a75a1c329a6cfdb04b250e8718c9bc201250af2d3bf48c7e24eb50121026849fbf5717806ed53e6a6284730469000eb9590abdb38393e659c2e0b6a1c8effffffff2910790b00000000001976a914199cd2125590e81e3fc9c4e1f5a4a2ec12415de988ac1b95b100000000001976a914f9ad0c27cd287e4199662aab0201bd4dd2a3ed5288ac0cceb300000000001976a9144e69a9a8d53139b41205d8fe57a16ca6e431290d88ac600eb400000000001976a9146aaeb9c8cec2a2d76ef9b9c2d63b3459154aea7b88ac6940b400000000001976a91436c426dd9d6484905a67f8dd4fae66103bb4790788ac005db400000000001976a914b4f93bb82163b3e9e4edcd3ac90446c6047200fa88ac005db400000000001976a914e5d9d480b39a57ac734522eb1c117a243c913d4b88ac005db400000000001976a914dcc2c8f75dadc624d00ea5e6accd2dd88a11c39f88ac005db400000000001976a91447c6590d3f10d865692f3b63be6c2bf64c14f74088ac005db4000000000017a914514515787cab1a0a39f9edc077c2ec528c4974e387005db400000000001976a914e14ecf624961f7eee5a6484de3a025c7688ba20088ac005db400000000001976a914c840c766bb18752a08687c33bfc792bf3e7b114b88ac005db400000000001976a91496e9f149aab3b2b541c55270c55f40ffed15f30588ac005db400000000001976a914968948611d808ea1848651858a31c9ae19d064d488ac005db4000000000017a9143ddd9c541fc9c8055b2877d8a37601cda4b9b29187005db4000000000017a9143f1ca52957541275a5eb0cd78d4e9b56215bea9387005db4000000000017a914cc76a99a0e5f5613236dc5cd663b0b905ec8a48087005db400000000001976a91434424e34a7a4a288add7f5214e164d7205c3f14b88ac005db400000000001976a91448ac118ef05fe3ab008dc8433500c5711b041c6088ac005db400000000001976a914a76a88bd237e0096b1c59a531bfadabfe649011088ac005db400000000001976a91460a3993514411badeb8bcebf4c9e469c8ff5b10e88ac005db400000000001976a9147c2b5fb4311b89b0268192a0035bc506f956fb2688ac005db400000000001976a914fec45fde40528783495c05dfffc659a91a9bcdf288ac005db400000000001976a914801ac30e100654acd1f54a7c4ea01a513715c19788ac005db400000000001976a914c525bcb2bcca5ab4667cac4d51649da158bb3add88ac005db400000000001976a91448d9abdf011bbf1a8f4054cb7fdf0c08b17e5f1f88ac005db400000000001976a9148c513fa5f2549568ef77791fb26b68e010b8aab488ac005db400000000001976a914936f046b076f8158506c74aa9d1698b94809969a88ac005db400000000001976a914667fb5b292eff94cd392556ceba18cf4439b6cba88ac005db400000000001976a9141424a5a4a726362d0de0c3adc8fa52f02f64a7b788ac005db4000000000017a914a92c9737786c85290cd966936515e8a2fcc1800087005db400000000001976a9143bd68fd2ea32c7f6f60e530bf443dc9e0067e0ac88ac005db400000000001976a91420f4157943cb14f202f765aa32cbe357c2c3e24688ac005db4000000000017a914fe1b706a89228e7513b22b61fc90d3219594349c87005db4000000000017a91418481cc73f48e21108c5d9667a9266f22f24262e87005db4000000000017a91424dff8c4b02e6481db18e5603fd040af0a5adfbb87005db4000000000017a914896335743c88beb76982346d8b3742980c263eac87005db400000000001976a91461efe5efe100d99052b98b49bd2f49c20970a44088ac005db4000000000017a914ae3a402744f4f8588496046d341e832b2d3674dd87005db400000000001976a91417f2aa4c3cc1007f3bcb09891a09c44fdf01e58d88ac005db400000000001976a9145aab370068e31ed494e3a3c4e71eb207f145677488ac00000000
+info: Step completed
+info: =================================
+
+info: =================================
+info: Step: 5. send tx
+info: Params: undefined
+
+info: shell cmd: bitcoin-cli sendrawtransaction 02000000019dd926598f07dab046046af5198457e7d3c0ed2bd432b5613f48338c0b5f9464010000006b4830450221009ead2f7e2a2150afd39afec4d9f9f32c1dcda593d7b0543deccbf1b4f8c262fe02202a2faaf29b1a75a1c329a6cfdb04b250e8718c9bc201250af2d3bf48c7e24eb50121026849fbf5717806ed53e6a6284730469000eb9590abdb38393e659c2e0b6a1c8effffffff2910790b00000000001976a914199cd2125590e81e3fc9c4e1f5a4a2ec12415de988ac1b95b100000000001976a914f9ad0c27cd287e4199662aab0201bd4dd2a3ed5288ac0cceb300000000001976a9144e69a9a8d53139b41205d8fe57a16ca6e431290d88ac600eb400000000001976a9146aaeb9c8cec2a2d76ef9b9c2d63b3459154aea7b88ac6940b400000000001976a91436c426dd9d6484905a67f8dd4fae66103bb4790788ac005db400000000001976a914b4f93bb82163b3e9e4edcd3ac90446c6047200fa88ac005db400000000001976a914e5d9d480b39a57ac734522eb1c117a243c913d4b88ac005db400000000001976a914dcc2c8f75dadc624d00ea5e6accd2dd88a11c39f88ac005db400000000001976a91447c6590d3f10d865692f3b63be6c2bf64c14f74088ac005db4000000000017a914514515787cab1a0a39f9edc077c2ec528c4974e387005db400000000001976a914e14ecf624961f7eee5a6484de3a025c7688ba20088ac005db400000000001976a914c840c766bb18752a08687c33bfc792bf3e7b114b88ac005db400000000001976a91496e9f149aab3b2b541c55270c55f40ffed15f30588ac005db400000000001976a914968948611d808ea1848651858a31c9ae19d064d488ac005db4000000000017a9143ddd9c541fc9c8055b2877d8a37601cda4b9b29187005db4000000000017a9143f1ca52957541275a5eb0cd78d4e9b56215bea9387005db4000000000017a914cc76a99a0e5f5613236dc5cd663b0b905ec8a48087005db400000000001976a91434424e34a7a4a288add7f5214e164d7205c3f14b88ac005db400000000001976a91448ac118ef05fe3ab008dc8433500c5711b041c6088ac005db400000000001976a914a76a88bd237e0096b1c59a531bfadabfe649011088ac005db400000000001976a91460a3993514411badeb8bcebf4c9e469c8ff5b10e88ac005db400000000001976a9147c2b5fb4311b89b0268192a0035bc506f956fb2688ac005db400000000001976a914fec45fde40528783495c05dfffc659a91a9bcdf288ac005db400000000001976a914801ac30e100654acd1f54a7c4ea01a513715c19788ac005db400000000001976a914c525bcb2bcca5ab4667cac4d51649da158bb3add88ac005db400000000001976a91448d9abdf011bbf1a8f4054cb7fdf0c08b17e5f1f88ac005db400000000001976a9148c513fa5f2549568ef77791fb26b68e010b8aab488ac005db400000000001976a914936f046b076f8158506c74aa9d1698b94809969a88ac005db400000000001976a914667fb5b292eff94cd392556ceba18cf4439b6cba88ac005db400000000001976a9141424a5a4a726362d0de0c3adc8fa52f02f64a7b788ac005db4000000000017a914a92c9737786c85290cd966936515e8a2fcc1800087005db400000000001976a9143bd68fd2ea32c7f6f60e530bf443dc9e0067e0ac88ac005db400000000001976a91420f4157943cb14f202f765aa32cbe357c2c3e24688ac005db4000000000017a914fe1b706a89228e7513b22b61fc90d3219594349c87005db4000000000017a91418481cc73f48e21108c5d9667a9266f22f24262e87005db4000000000017a91424dff8c4b02e6481db18e5603fd040af0a5adfbb87005db4000000000017a914896335743c88beb76982346d8b3742980c263eac87005db400000000001976a91461efe5efe100d99052b98b49bd2f49c20970a44088ac005db4000000000017a914ae3a402744f4f8588496046d341e832b2d3674dd87005db400000000001976a91417f2aa4c3cc1007f3bcb09891a09c44fdf01e58d88ac005db400000000001976a9145aab370068e31ed494e3a3c4e71eb207f145677488ac00000000
+shell result:
+96d1c74534597e5939d49a9615c6399f3fe0967c8ac40f83c4acc556eb062464
+info: TX PUSHED! YEAH!!!
+info: Step completed
+info: =================================
