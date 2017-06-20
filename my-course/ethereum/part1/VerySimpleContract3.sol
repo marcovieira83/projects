@@ -12,7 +12,7 @@ contract VerySimpleContract {
 
     Statistics public statistics;
     uint[] public values;
-    uint x;
+    uint public x;
 
     function VerySimpleContract() {
         setX(27);

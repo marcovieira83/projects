@@ -1,7 +1,7 @@
 pragma solidity ^0.4.0;
 
 contract VerySimpleContract {
-    uint x;
+    uint public x;
 
     function VerySimpleContract() {
         x = 27;
