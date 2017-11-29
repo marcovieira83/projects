@@ -1,66 +1,62 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>VERY SIMPLE CONTRACT</title>
+  <title>DAPP - VERY SIMPLE CONTRACT</title>
   <script type="text/javascript" src="./dist/bignumber.js/bignumber.min.js"></script>
   <script type="text/javascript" src="./dist/web3.js"></script>
 </head>
 <body>
-  <h1>VERY SIMPLE CONTRACT</h1><br/>
+  <h1>DAPP - VERY SIMPLE CONTRACT</h1><br/>
   <script>
 
-    // TODO importar web3 e definir o provider http://localhost:8545
     var Web3 = require('web3');
-    var web3 = new Web3();
-    web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
+    if (typeof web3 !== 'undefined') {
+      console.log('web3 was already injected')
+      web3 = new Web3(web3.currentProvider);
+    }
     eth = web3.eth;
 
-    // TODO desbloquear conta
-    personal = web3.personal;
-    personal.unlockAccount(eth.accounts[0], '1234', 30000);
-
-    // TODO obter instância do contrato
     var abiArray = [ { "constant": true, "inputs": [], "name": "getValues", "outputs": [ { "name": "", "type": "uint256[]", "value": [ "27" ] } ], "payable": false, "type": "function" }, { "constant": false, "inputs": [ { "name": "_newValue", "type": "uint256" } ], "name": "setX", "outputs": [], "payable": false, "type": "function" }, { "constant": true, "inputs": [], "name": "getX", "outputs": [ { "name": "", "type": "uint256", "value": "27" } ], "payable": false, "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "uint256" } ], "name": "values", "outputs": [ { "name": "", "type": "uint256", "value": "27" } ], "payable": false, "type": "function" }, { "inputs": [], "payable": false, "type": "constructor" }, { "anonymous": false, "inputs": [ { "indexed": false, "name": "newValue", "type": "uint256" }, { "indexed": false, "name": "oldValue", "type": "uint256" } ], "name": "NewValue", "type": "event" } ];
     var VerySimpleContract = web3.eth.contract(abiArray);
-    var c = VerySimpleContract.at('0x16bfdf99f147975dE83162CbC23Cb8d54941262c');
+    var contractAddress = '0x1915fD720D8222C62aC269e0dDB24C3dF6CdD6cb';
+    var c = VerySimpleContract.at(contractAddress);
 
     function refresh() {
-        // TODO atualizar elementos da página com os valores do contrato
-      document.getElementById('current').innerHTML = c.getX().toString();
-      document.getElementById('first').innerHTML = c.values(0).toString();
-      document.getElementById('second').innerHTML = c.values(1).toString();
-      document.getElementById('third').innerHTML = c.values(2).toString();
-      document.getElementById('allValues').innerHTML = c.getValues().toString();
+      document.getElementById('contractAddress').innerHTML = contractAddress;
+      eth.getAccounts((e, accounts) => {
+        document.getElementById('account').innerHTML = accounts[0];
+      })
+
+      c.getX((e, result) => {
+        document.getElementById('current').innerHTML = result.toString();
+      });
+
+      c.getValues((e, result) => {
+        document.getElementById('first').innerHTML = result[0].toString();
+        document.getElementById('second').innerHTML = result.length >= 2 ? result[1].toString() : '';
+        document.getElementById('third').innerHTML = result.length >= 3 ? result[2].toString() : '';
+        document.getElementById('allValues').innerHTML = result.toString();
+      });
     }
 
     function setNewValue() {
       var newValue = document.getElementById('newValue').value;
-
-      // TODO chamar setX e salvar o resultado em uma variável 'r'
-      var r = c.setX(newValue, {from: eth.accounts[0] });
-      document.getElementById('tx').innerHTML = r;
+      c.setX(newValue, {from: eth.accounts[0] }, (e, result) => {
+        document.getElementById('tx').innerHTML = result;
+      });
     }
-
-
-    // TODO monitorar os eventos 'NewValue' e atualizar a página
-    var event = c.NewValue();
-    event.watch(function(error, result){
-      document.getElementById('newValueSpan').innerHTML = result.args.newValue;
-      document.getElementById('oldValueSpan').innerHTML = result.args.oldValue;
-      refresh();
-    });
   </script>
 
   <div>
-    <input type="text" id="newValue" placeholder="novo valor"></input>
-    <button id="newValueButton" onclick="setNewValue()">Set</button>
+    <div><b>Contract Address: </b><span id="contractAddress"></span></div><br/>
+    <div><b>Account: </b><span id="account"></span></div><br/>
   </div>
   <br/>
   <div style="border-style: groove;">
     <br/>
+    <input type="text" id="newValue" placeholder="New Value"></input>
+    <button id="newValueButton" onclick="setNewValue()">Set</button><br/><br/>
     <div><b>Tx hash: </b><span id="tx"></span></div><br/>
-    <div><b>New value: </b><span id="newValueSpan"></span></div><br/>
-    <div><b>Old value: </b><span id="oldValueSpan"></span></div><br/>
   </div>
   <br/>
   <div style="border-style: groove;">
