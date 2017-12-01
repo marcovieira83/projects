@@ -1,5 +1,4 @@
-
-pragma solidity ^0.4.0;
+pragma solidity 0.4.19;
 
 contract VerySimpleContract {
     struct Statistics {
@@ -14,12 +13,12 @@ contract VerySimpleContract {
     uint[] public values;
     uint public x;
 
-    function VerySimpleContract() {
+    function VerySimpleContract() public {
         setX(27);
     }
 
-    function setX(uint _newValue) {
-        if (_newValue > 100) throw;
+    function setX(uint _newValue) public {
+        require(_newValue <= 100);
 
         values.push(_newValue);
         x = _newValue;
@@ -39,11 +38,11 @@ contract VerySimpleContract {
         statistics.average2 = statistics.sum / statistics.changes;
     }
 
-    function getX() constant returns (uint) {
+    function getX() public view returns (uint) {
         return x;
     }
 
-    function getValues() constant returns (uint[]) {
+    function getValues() public view returns (uint[]) {
         return values;
     }
 }

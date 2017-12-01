@@ -1,4 +1,4 @@
-pragma solidity ^0.4.0;
+pragma solidity 0.4.19;
 
 contract VerySimpleContract {
     struct Statistics {
@@ -9,20 +9,20 @@ contract VerySimpleContract {
     Statistics public statistics;
     uint public x;
 
-    function VerySimpleContract() {
+    function VerySimpleContract() public {
         setX(27);
     }
 
-    function getX() constant returns (uint) {
+    function getX() public view returns (uint) {
         return x;
     }
 
 
-    function getXPlusOne() constant returns (uint _value) {
+    function getXPlusOne() public view returns (uint _value) {
       _value = x + 1;
     }
 
-    function setX(uint _newValue) {
+    function setX(uint _newValue) public {
         x = _newValue;
 
         if (_newValue > statistics.max) {
