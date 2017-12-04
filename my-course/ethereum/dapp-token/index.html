@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DAPP - TOKEN</title>
+  <script type="text/javascript" src="./dist/bignumber.js/bignumber.min.js"></script>
+  <script type="text/javascript" src="./dist/web3.js"></script>
+</head>
+<body>
+  <h1>DAPP - TOKEN</h1><br/>
+  <script>
+
+    var Web3 = require('web3');
+    if (typeof web3 !== 'undefined') {
+      console.log('web3 was already injected')
+      web3 = new Web3(web3.currentProvider);
+    } else {
+      console.error('web3 was not injected. This Dapp will not work.');
+    }
+    eth = web3.eth;
+
+    var abiArray = [{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"balanceOf","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[{"name":"_initialSupply","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_from","type":"address"},{"indexed":false,"name":"_to","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"Transfer","type":"event"}];
+    var MyTokenContract = web3.eth.contract(abiArray);
+    var contractAddress = '0x00FCaACabc9A92a35dDE790b0B82F717f81b3bC6';
+    var c = MyTokenContract.at(contractAddress);
+    var account, decimals, symbol;
+
+    function refresh() {
+      document.getElementById('contractAddress').innerHTML = contractAddress;
+
+      c.name((e, result) => {
+        document.getElementById('name').innerHTML = result.toString();
+      });
+      c.symbol((e, result) => {
+        symbol = result.toString();
+        document.getElementById('symbol').innerHTML = symbol;
+      });
+      c.decimals((e, result) => {
+        decimals = result;
+        document.getElementById('decimals').innerHTML = result.toString();
+
+        eth.getAccounts((e, accounts) => {
+          account = accounts[0];
+          document.getElementById('account').innerHTML = account;
+          c.balanceOf(account, (e, result) => {
+            const balance = new BigNumber(result.toString()).div(new BigNumber(10).pow(decimals));
+            document.getElementById('balanceOf').innerHTML =  `${balance} ${symbol}`;
+          });
+        })
+      });
+    }
+
+    function transfer() {
+      var address = document.getElementById('addressToTransfer').value;
+      var value = document.getElementById('valueToTransfer').value;
+
+      const valueMultiplied = new BigNumber(value).mul(new BigNumber(10).pow(decimals));
+      console.log(valueMultiplied.toString())
+      c.transfer(address, valueMultiplied, {from: account}, (e, result) => {
+        document.getElementById('tx').innerHTML = result;
+      });
+    }
+  </script>
+
+  <div style="border-style: groove;">
+    <div><b>Contract Address: </b><span id="contractAddress"></span></div><br/>
+    <div>
+      <b>Name: </b><span id="name"></span>
+      <b>Symbol: </b><span id="symbol"></span>
+      <b>Decimals: </b><span id="decimals"></span>
+    </div><br/>
+  </div>
+  <div style="border-style: groove;">
+    <br/>
+    <div>
+      <b>Account: </b><span id="account"></span>
+      <b>Balance: </b><span id="balanceOf"></span>
+    </div><br/>
+  </div>
+  <div style="border-style: groove;">
+    <br/>
+    <input type="text" id="addressToTransfer" placeholder="Address to transfer" size=40></input>
+    <input type="text" id="valueToTransfer" placeholder="Value to transfer"></input>
+    <button id="transferButton" onclick="transfer()">Transfer</button><br/><br/>
+    <div><b>Tx hash: </b><span id="tx"></span></div><br/>
+  </div>
+  <br/>
+
+  <script>
+    refresh();
+  </script>
+</body>
+</html>
