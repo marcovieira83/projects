@@ -54,7 +54,6 @@
       var value = document.getElementById('valueToTransfer').value;
 
       const valueMultiplied = new BigNumber(value).mul(new BigNumber(10).pow(decimals));
-      console.log(valueMultiplied.toString())
       c.transfer(address, valueMultiplied, {from: account}, (e, result) => {
         document.getElementById('tx').innerHTML = result;
       });
