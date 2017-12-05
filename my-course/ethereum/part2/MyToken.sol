@@ -1,9 +1,9 @@
 pragma solidity ^0.4.18;
 
 contract MyToken {
-    string public name = "MYTOKEN";
-    string public symbol = "MYT$";
-    uint8 public decimals = 2;
+    string public constant name = "MYTOKEN";
+    string public constant symbol = "MYT$";
+    uint8 public constant decimals = 2;
     mapping (address => uint256) public balanceOf;
 
     event Transfer(address _from, address _to, uint256 _value);
